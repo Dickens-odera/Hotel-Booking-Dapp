@@ -2,14 +2,18 @@
 pragma solidity ^0.8.0;//>=0.4.22 <0.9.0;
 import '@openzeppelin/contracts/utils/math/SafeMath.sol';
 
-/**
-  @dev A simple Smart Contract for hotel management
-  @author Dickens Odera dickensodera9@gmail.com
-**/
+
+  /**
+   * @dev A simple Smart Contract for hotel management
+   * @author Dickens Odera dickensodera9@gmail.com
+  **/
+
+
 contract Hotel {
   using SafeMath for uint256;
 
-  uint public totalHotels = 0; //the total number of the hotels
+  uint public totalHotels; //the total number of the hotels
+  uint public currentHotelId; //hotel id to be inrecemented when a new hotel is created
 
   enum HOTEL_CATEGORY {CHAIN_HOTEL, MOTEL, RESORT, INN, ALL_SUITS, BOUTIGUE, EXTENDED_STAY} // hotel types
   HOTEL_CATEGORY public hotelCategory;
@@ -19,9 +23,9 @@ contract Hotel {
   struct HotelItem{
     uint id;
     uint totalRooms;
+    uint creationDate;
     string name;
     HOTEL_CATEGORY hotelCategory;
-    //string hotelType;
     string description;
     string locationAddress;
   }
@@ -31,18 +35,51 @@ contract Hotel {
   mapping(address => HotelItem) public hotelOwner; //the owner of this hotel
 
   //events
-  event HotelCreated(uint date, address indexed caller, uint id);
-  //errors
-//   constructor() public {
-//   }
+  event HotelCreated(uint date, address indexed caller, uint indexed id);
 
-  function addHotel(uint _id, uint _numOfRooms, string memory _name,HOTEL_CATEGORY _category,string memory _description, string memory _location) public{
-    assert(_category == DEFAULT_HOTEL_TYPE);
-    HotelItem memory hotel = HotelItem(_id, _numOfRooms, _name, DEFAULT_HOTEL_TYPE,_description, _location);
+
+  constructor() public {
+      totalHotels = 0;
+      currentHotelId = 0;
+  }
+
+  modifier hotelExists(uint _index){
+      bool hotelExists = false;
+      for(uint i = 0; i < hotelItems.length; i++){
+          if(i == _index){
+              hotelExists = true;
+          }
+      }
+      require(hotelExists == true,"Hotel Does Not Exist");
+      _;
+  }
+
+  function addHotel(uint _numOfRooms, string memory _name,string memory _description, string memory _location) public{
+    currentHotelId = currentHotelId.add(1);
+    HotelItem memory hotel = HotelItem(currentHotelId, _numOfRooms, block.timestamp, _name, DEFAULT_HOTEL_TYPE,_description, _location);
     hotelItems.push(hotel);
     hotelOwner[msg.sender] = hotel;
-    //hotelItems.push(HotelItem(_id,_numOfRooms,_name,_description, _location));
     totalHotels = totalHotels.add(1);
-    emit HotelCreated(block.timestamp, msg.sender, _id);
+    emit HotelCreated(block.timestamp, msg.sender, currentHotelId);
   }
+
+  function getHotelBioData(uint _index) public view hotelExists(_index) returns(
+      uint _id,
+      uint _totalRooms,
+      uint _date,
+      string  memory _name,
+      string memory _description,
+      string memory _location,
+      HOTEL_CATEGORY _category
+      ){
+    HotelItem storage hotelItem = hotelItems[_index];
+    _id = hotelItem.id;
+    _totalRooms = hotelItem.totalRooms;
+    _date = hotelItem.creationDate;
+    _name = hotelItem.name;
+    _description = hotelItem.description;
+    _location = hotelItem.locationAddress;
+    _category = hotelItem.hotelCategory;
+  }
+
 }
