@@ -28,7 +28,7 @@ contract Room is Hotel{
     event NewRoomCreated(address indexed user, uint date, uint id);
     event RoomNightPriceSet(address indexed user, uint price, uint indexed date);
     event RoomBooked(uint date);
-
+    
     constructor() public{
         totalRooms = 0;
         roomId = 0;
@@ -50,9 +50,10 @@ contract Room is Hotel{
         _;
     }
 
-    function addRoom(uint _hotelId, uint _totalBeds, uint _pricePerNight, uint _number,string memory _name, string memory _description) public{
+    function addRoom(uint _hotelIndex, uint _totalBeds, uint _pricePerNight, uint _number,string memory _name, string memory _description) public hotelExists(_hotelIndex) onlyOwner(){
         roomId = roomId.add(1);
-        RoomItem memory roomItem = RoomItem(roomId,_totalBeds,_hotelId,_pricePerNight, _number, false, msg.sender,_name,_description);
+        uint hotelId = hotelItems[_hotelIndex].id;
+        RoomItem memory roomItem = RoomItem(roomId,_totalBeds,hotelId,_pricePerNight, _number, false, msg.sender,_name,_description);
         rooms.push(roomItem);
         roomOwner[msg.sender] = roomItem;
         totalRooms = totalRooms.add(1);
@@ -97,5 +98,9 @@ contract Room is Hotel{
     function setBooked(uint _index) internal roomExists(_index){
         rooms[_index].isBooked = true;
         emit RoomBooked(block.timestamp);
+    }
+
+    function listRooms() public view returns(RoomItem[] memory){
+        return rooms;
     }
 }
