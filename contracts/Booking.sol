@@ -24,13 +24,12 @@ contract Booking is Room{
     bookingId = 0;
   }
 
-  function bookRoom(uint _index,uint _numOfNights, uint _amount) public payable roomExists(_index) isNotBooked(_index){
+  function bookRoom(uint _index,uint _numOfNights) public payable roomExists(_index) isNotBooked(_index){
     RoomItem storage room = rooms[_index];
-    _amount = msg.value;
     uint totalPayableAmount = room.pricePerNight.mul(_numOfNights);
     require(msg.sender != room.user,"You cannot book your own room");
     require(msg.sender.balance >= totalPayableAmount,"Insufficient Funds");
-    //require(_amount == totalPayableAmount,"Please enter the correct amount");
+    require(msg.value == totalPayableAmount,"Please enter the correct amount");
     require(_numOfNights != 0,"Number of nights cannot be zero");
     //room.user.balance = room.user.balance.add(totalPayableAmount);
     //msg.sender.balance = msg.sender.balance.a.sub(totalPayableAmount);
