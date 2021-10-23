@@ -31,10 +31,10 @@ contract Booking is Room{
     require(msg.sender.balance >= totalPayableAmount,"Insufficient Funds");
     require(msg.value == totalPayableAmount,"Please enter the correct amount");
     require(_numOfNights != 0,"Number of nights cannot be zero");
-    room.user.transfer(msg.value);
     room.user.balance.add(totalPayableAmount);
     msg.sender.balance.sub(totalPayableAmount);
     bookingId = bookingId.add(1);
+    room.user.transfer(msg.value);
     _setBooked(_index);
     _registerBooking(room.id,bookingId,msg.value, payable(msg.sender));
     roomTenant[_index] = msg.sender;
