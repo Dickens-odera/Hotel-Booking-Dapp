@@ -30,7 +30,7 @@ contract Booking is Room{
     uint totalPayableAmount = room.pricePerNight.mul(_numOfNights);
     require(msg.sender != room.user,"You cannot book your own room");
     require(msg.sender.balance >= totalPayableAmount,"Insufficient Funds");
-    require(msg.value == totalPayableAmount,"Please enter the correct amount");
+    //require(_amount == totalPayableAmount,"Please enter the correct amount");
     require(_numOfNights != 0,"Number of nights cannot be zero");
     //room.user.balance = room.user.balance.add(totalPayableAmount);
     //msg.sender.balance = msg.sender.balance.a.sub(totalPayableAmount);
