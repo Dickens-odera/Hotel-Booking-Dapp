@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 import '@openzeppelin/contracts/utils/math/SafeMath.sol';
+import '@openzeppelin/contracts/access/Ownable.sol';
 import './HotelBookingInterface.sol';
 
   /**
@@ -8,7 +9,8 @@ import './HotelBookingInterface.sol';
    * @author Dickens Odera dickensodera9@gmail.com
   **/
 
-contract Hotel {
+
+contract Hotel is Ownable, HotelBookingInterface {
   using SafeMath for uint256;
 
   uint public totalHotels; //the total number of the hotels
@@ -59,7 +61,7 @@ contract Hotel {
       _;
   }
 
-  function addHotel(uint _numOfRooms, string memory _name,string memory _description, string memory _location) public{
+  function addHotel(uint _numOfRooms, string memory _name,string memory _description, string memory _location) public onlyOwner(){
     currentHotelId = currentHotelId.add(1);
     HotelItem memory hotel = HotelItem(currentHotelId, _numOfRooms, block.timestamp, _name, DEFAULT_HOTEL_TYPE,_description, _location, msg.sender);
     hotelItems.push(hotel);
@@ -95,11 +97,11 @@ contract Hotel {
      emit HotelCategoryChanged(msg.sender, block.timestamp, _category);
   }
 
-function getName(uint _index) external view hotelExists(_index)returns(string memory){ //override
-    return hotelItems[_index].name;
-}
+  function getName(uint _index) external view override hotelExists(_index)returns(string memory){
+      return hotelItems[_index].name;
+  }
 
-function getId(uint _index) external view hotelExists(_index) returns(uint){ //override
-    return hotelItems[_index].id;
-}
+  function getId(uint _index) external view override hotelExists(_index) returns(uint){
+      return hotelItems[_index].id;
+  }
 }
