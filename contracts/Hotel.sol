@@ -28,6 +28,7 @@ contract Hotel {
     HOTEL_CATEGORY hotelCategory;
     string description;
     string locationAddress;
+    address user;
   }
 
   HotelItem[] public hotelItems; //hotels array of the Hotel struct above
@@ -35,8 +36,8 @@ contract Hotel {
   mapping(address => HotelItem) public hotelOwner; //the owner of this hotel
 
   //events
-  event HotelCreated(uint date, address indexed caller, uint indexed id);
-
+  event HotelCreated(uint date, address indexed causer, uint indexed id);
+  event HotelCategoryChanged(address indexed causer, uint date, HOTEL_CATEGORY indexed newCategory);
 
   constructor() public {
       totalHotels = 0;
@@ -54,9 +55,14 @@ contract Hotel {
       _;
   }
 
+  modifier ownsHotel(uint _index){
+      require(msg.sender == hotelItems[_index].user,"You Do Not Own This Hotel Item");
+      _;
+  }
+
   function addHotel(uint _numOfRooms, string memory _name,string memory _description, string memory _location) public{
     currentHotelId = currentHotelId.add(1);
-    HotelItem memory hotel = HotelItem(currentHotelId, _numOfRooms, block.timestamp, _name, DEFAULT_HOTEL_TYPE,_description, _location);
+    HotelItem memory hotel = HotelItem(currentHotelId, _numOfRooms, block.timestamp, _name, DEFAULT_HOTEL_TYPE,_description, _location, msg.sender);
     hotelItems.push(hotel);
     hotelOwner[msg.sender] = hotel;
     totalHotels = totalHotels.add(1);
@@ -67,7 +73,7 @@ contract Hotel {
       uint _id,
       uint _totalRooms,
       uint _date,
-      string  memory _name,
+      string memory _name,
       string memory _description,
       string memory _location,
       HOTEL_CATEGORY _category
@@ -82,4 +88,11 @@ contract Hotel {
     _category = hotelItem.hotelCategory;
   }
 
+  function changeHotelCategory(uint _index, HOTEL_CATEGORY _category) public ownsHotel(_index) hotelExists(_index) {
+     HotelItem storage hotelItem = hotelItems[_index];
+     assert(_category != DEFAULT_HOTEL_TYPE);
+     assert(_category != hotelItem.hotelCategory);
+     hotelItem.hotelCategory = _category;
+     emit HotelCategoryChanged(msg.sender, block.timestamp, _category);
+  }
 }
