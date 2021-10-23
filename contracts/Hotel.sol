@@ -9,7 +9,6 @@ import './HotelBookingInterface.sol';
    * @author Dickens Odera dickensodera9@gmail.com
   **/
 
-
 contract Hotel is Ownable, HotelBookingInterface {
   using SafeMath for uint256;
 
@@ -39,6 +38,7 @@ contract Hotel is Ownable, HotelBookingInterface {
   //events
   event HotelCreated(uint date, address indexed causer, uint indexed id);
   event HotelCategoryChanged(address indexed causer, uint date, HOTEL_CATEGORY indexed newCategory);
+  event HotelOwnerChanged(address indexed causer, address indexed newOwner, uint date);
 
   constructor() public {
       totalHotels = 0;
@@ -104,4 +104,10 @@ contract Hotel is Ownable, HotelBookingInterface {
   function getId(uint _index) external view override hotelExists(_index) returns(uint){
       return hotelItems[_index].id;
   }
+
+  function changeHotelOwner(address _newOwner, uint _index) public hotelExists(_index) ownsHotel(_index){
+    require(msg.sender != _newOwner,"You are the rightful owner already");
+    hotelItems[_index].user = _newOwner;
+    emit HotelOwnerChanged(msg.sender, _newOwner, block.timestamp);
+}
 }
