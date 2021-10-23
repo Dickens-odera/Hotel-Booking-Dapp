@@ -116,11 +116,11 @@ contract Hotel is Ownable, HotelBookingInterface {
      emit HotelCategoryChanged(msg.sender, block.timestamp, _category);
   }
 
-  function getName(uint _index) external view override hotelExists(_index)returns(string memory){
+  function getName(uint _index) external virtual view override hotelExists(_index) returns(string memory){
       return hotelItems[_index].name;
   }
 
-  function getId(uint _index) external view override hotelExists(_index) returns(uint){
+  function getId(uint _index) external virtual view override hotelExists(_index) returns(uint){
       return hotelItems[_index].id;
   }
 
