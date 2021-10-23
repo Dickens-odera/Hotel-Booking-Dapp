@@ -9,6 +9,7 @@ import './HotelBookingInterface.sol';
    * @author Dickens Odera dickensodera9@gmail.com
   **/
 
+
 contract Hotel is Ownable, HotelBookingInterface {
   using SafeMath for uint256;
 
@@ -45,6 +46,7 @@ contract Hotel is Ownable, HotelBookingInterface {
       currentHotelId = 0;
   }
 
+  //ensure that the hotel exists in the blockchain before performing related transactions
   modifier hotelExists(uint _index){
       bool hotelExists = false;
       for(uint i = 0; i < hotelItems.length; i++){
@@ -56,18 +58,35 @@ contract Hotel is Ownable, HotelBookingInterface {
       _;
   }
 
+  //to avoid duplicate hotel names in the contract
+  modifier hotelNameExists(string memory _name){
+     bool exists = false;
+     for(uint i = 0; i < hotelItems.length; i++){
+         if(keccak256(abi.encodePacked(hotelItems[i].name)) == keccak256(abi.encodePacked(_name))){
+             exists = true;
+         }
+     }
+     require(exists == false,"Hotel Name Exists");
+     _;
+  }
+
+  //ensure the transactionsender owns this hotel before the transaction
   modifier ownsHotel(uint _index){
       require(msg.sender == hotelItems[_index].user,"You Do Not Own This Hotel Item");
       _;
   }
 
-  function addHotel(uint _numOfRooms, string memory _name,string memory _description, string memory _location) public onlyOwner(){
+  function addHotel(uint _numOfRooms, string memory _name,string memory _description, string memory _location) public onlyOwner() hotelNameExists(_name){
     currentHotelId = currentHotelId.add(1);
     HotelItem memory hotel = HotelItem(currentHotelId, _numOfRooms, block.timestamp, _name, DEFAULT_HOTEL_TYPE,_description, _location, msg.sender);
     hotelItems.push(hotel);
     hotelOwner[msg.sender] = hotel;
     totalHotels = totalHotels.add(1);
     emit HotelCreated(block.timestamp, msg.sender, currentHotelId);
+  }
+
+  function listAllHotels() public view returns(HotelItem[] memory){
+      return hotelItems;
   }
 
   function getHotelBioData(uint _index) public view hotelExists(_index) returns(
@@ -89,7 +108,7 @@ contract Hotel is Ownable, HotelBookingInterface {
     _category = hotelItem.hotelCategory;
   }
 
-  function changeHotelCategory(uint _index, HOTEL_CATEGORY _category) public ownsHotel(_index) hotelExists(_index) {
+  function changeHotelCategory(uint _index, HOTEL_CATEGORY _category) public hotelExists(_index) ownsHotel(_index) {
      HotelItem storage hotelItem = hotelItems[_index];
      assert(_category != DEFAULT_HOTEL_TYPE);
      assert(_category != hotelItem.hotelCategory);
@@ -106,8 +125,8 @@ contract Hotel is Ownable, HotelBookingInterface {
   }
 
   function changeHotelOwner(address _newOwner, uint _index) public hotelExists(_index) ownsHotel(_index){
-    require(msg.sender != _newOwner,"You are the rightful owner already");
-    hotelItems[_index].user = _newOwner;
-    emit HotelOwnerChanged(msg.sender, _newOwner, block.timestamp);
-}
+      require(msg.sender != _newOwner,"You are the rightful owner already");
+      hotelItems[_index].user = _newOwner;
+      emit HotelOwnerChanged(msg.sender, _newOwner, block.timestamp);
+  }
 }
