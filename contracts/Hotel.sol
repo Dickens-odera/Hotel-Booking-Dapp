@@ -29,7 +29,7 @@ contract Hotel is Ownable, HotelBookingInterface {
     HOTEL_CATEGORY hotelCategory;
     string description;
     string locationAddress;
-    address user;
+    address payable user;
   }
 
   HotelItem[] public hotelItems; //hotels array of the Hotel struct above
@@ -78,7 +78,7 @@ contract Hotel is Ownable, HotelBookingInterface {
 
   function addHotel(uint _numOfRooms, string memory _name,string memory _description, string memory _location) public onlyOwner() hotelNameExists(_name){
     currentHotelId = currentHotelId.add(1);
-    HotelItem memory hotel = HotelItem(currentHotelId, _numOfRooms, block.timestamp, _name, DEFAULT_HOTEL_TYPE,_description, _location, msg.sender);
+    HotelItem memory hotel = HotelItem(currentHotelId, _numOfRooms, block.timestamp, _name, DEFAULT_HOTEL_TYPE,_description, _location, payable(msg.sender));
     hotelItems.push(hotel);
     hotelOwner[msg.sender] = hotel;
     totalHotels = totalHotels.add(1);
@@ -124,7 +124,7 @@ contract Hotel is Ownable, HotelBookingInterface {
       return hotelItems[_index].id;
   }
 
-  function changeHotelOwner(address _newOwner, uint _index) public hotelExists(_index) ownsHotel(_index){
+  function changeHotelOwner(address payable _newOwner, uint _index) public hotelExists(_index) ownsHotel(_index){
       require(msg.sender != _newOwner,"You are the rightful owner already");
       hotelItems[_index].user = _newOwner;
       emit HotelOwnerChanged(msg.sender, _newOwner, block.timestamp);
