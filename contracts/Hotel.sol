@@ -1,13 +1,12 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;//>=0.4.22 <0.9.0;
+pragma solidity ^0.8.0;
 import '@openzeppelin/contracts/utils/math/SafeMath.sol';
-
+import './HotelBookingInterface.sol';
 
   /**
    * @dev A simple Smart Contract for hotel management
    * @author Dickens Odera dickensodera9@gmail.com
   **/
-
 
 contract Hotel {
   using SafeMath for uint256;
@@ -95,4 +94,12 @@ contract Hotel {
      hotelItem.hotelCategory = _category;
      emit HotelCategoryChanged(msg.sender, block.timestamp, _category);
   }
+
+function getName(uint _index) external view hotelExists(_index)returns(string memory){ //override
+    return hotelItems[_index].name;
+}
+
+function getId(uint _index) external view hotelExists(_index) returns(uint){ //override
+    return hotelItems[_index].id;
+}
 }
