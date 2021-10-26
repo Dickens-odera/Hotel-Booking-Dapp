@@ -48,13 +48,13 @@ contract Hotel is Ownable, HotelBookingInterface {
 
   //ensure that the hotel exists in the blockchain before performing related transactions
   modifier hotelExists(uint _index){
-      bool hotelExists = false;
+      bool hotelAlreadyExists = false;
       for(uint i = 0; i < hotelItems.length; i++){
           if(i == _index){
-              hotelExists = true;
+              hotelAlreadyExists = true;
           }
       }
-      require(hotelExists == true,"Hotel Does Not Exist");
+      require(hotelAlreadyExists == true,"Hotel Does Not Exist");
       _;
   }
 

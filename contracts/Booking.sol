@@ -19,6 +19,8 @@ contract Booking is Room{
   uint public totalBookings;
   uint public bookingId;
 
+  event CheckoutSuccessfull(address indexed tenant, uint indexed roomId, uint indexed date);
+
   constructor() public {
     totalBookings = 0;
     bookingId = 0;
@@ -26,10 +28,10 @@ contract Booking is Room{
 
   function bookRoom(uint _index,uint _numOfNights) public payable roomExists(_index) isNotBooked(_index){
     RoomItem storage room = rooms[_index];
-    uint totalPayableAmount = room.pricePerNight.mul(_numOfNights);
+    uint totalPayableAmount = _numOfNights.mul(room.pricePerNight);
     require(msg.sender != room.user,"You cannot book your own room");
     require(msg.sender.balance >= totalPayableAmount,"Insufficient Funds");
-    require(msg.value == totalPayableAmount,"Please enter the correct amount");
+    //require(totalPayableAmount == msg.value,"Please enter the correct amount");
     require(_numOfNights != 0,"Number of nights cannot be zero");
     room.user.balance.add(totalPayableAmount);
     msg.sender.balance.sub(totalPayableAmount);
@@ -43,8 +45,9 @@ contract Booking is Room{
   function checkOut(uint _index) public payable {
     RoomItem storage room = rooms[_index];
     require(room.isBooked == true,"Room is not booked");
-    require(msg.sender == roomTenant[_index],"You currently dont reside in this room");
+    require(msg.sender == roomTenant[room.id],"You currently dont reside in this room");
     room.isBooked = false;
+    emit CheckoutSuccessfull(msg.sender,room.id,block.timestamp);
   }
 
   function _registerBooking(uint _roomId, uint _bookingId,uint _amountPaid, address payable _tenant) internal{
