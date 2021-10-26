@@ -37,7 +37,7 @@ contract Booking is Room{
     room.user.transfer(msg.value);
     _setBooked(_index);
     _registerBooking(room.id,bookingId,msg.value, payable(msg.sender));
-    roomTenant[_index] = msg.sender;
+    roomTenant[room.id] = msg.sender;
   }
 
   function checkOut(uint _index) public payable {
