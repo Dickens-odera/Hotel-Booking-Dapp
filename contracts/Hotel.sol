@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 import '@openzeppelin/contracts/utils/math/SafeMath.sol';
+import '@openzeppelin/contracts/security/ReentrancyGuard.sol';
 import '@openzeppelin/contracts/access/Ownable.sol';
+import '@openzeppelin/contracts/utils/Counters.sol';
 import './HotelBookingInterface.sol';
 
   /**
@@ -9,12 +11,13 @@ import './HotelBookingInterface.sol';
    * @author Dickens Odera dickensodera9@gmail.com
   **/
 
-
-contract Hotel is Ownable, HotelBookingInterface {
+contract Hotel is Ownable, HotelBookingInterface, ReentrancyGuard {
   using SafeMath for uint256;
+  using Counters for Counters.Counter;
 
   uint public totalHotels; //the total number of the hotels
-  uint public currentHotelId; //hotel id to be inrecemented when a new hotel is created
+  uint public hotelListingFee = 0.001 ether; //the amount to pay for your hotel to be listed on our platform
+  Counters.Counter private _hotelIds; //hotel id to be inrecemented when a new hotel is created
 
   enum HOTEL_CATEGORY {CHAIN_HOTEL, MOTEL, RESORT, INN, ALL_SUITS, BOUTIGUE, EXTENDED_STAY} // hotel types
   HOTEL_CATEGORY public hotelCategory;
@@ -43,7 +46,6 @@ contract Hotel is Ownable, HotelBookingInterface {
 
   constructor() public {
       totalHotels = 0;
-      currentHotelId = 0;
   }
 
   //ensure that the hotel exists in the blockchain before performing related transactions
@@ -76,12 +78,15 @@ contract Hotel is Ownable, HotelBookingInterface {
       _;
   }
 
-  function addHotel(uint _numOfRooms, string memory _name,string memory _description, string memory _location) public onlyOwner() hotelNameExists(_name){
-    currentHotelId = currentHotelId.add(1);
+  function addHotel(uint _numOfRooms, string memory _name,string memory _description, string memory _location) public payable nonReentrant hotelNameExists(_name){
+    require(msg.value == hotelListingFee,"Invalid Listing Fee");
+    _hotelIds.increment();
+    uint currentHotelId = _hotelIds.current();
     HotelItem memory hotel = HotelItem(currentHotelId, _numOfRooms, block.timestamp, _name, DEFAULT_HOTEL_TYPE,_description, _location, payable(msg.sender));
     hotelItems.push(hotel);
     hotelOwner[msg.sender] = hotel;
     totalHotels = totalHotels.add(1);
+    payable(owner()).transfer(msg.value);
     emit HotelCreated(block.timestamp, msg.sender, currentHotelId);
   }
 

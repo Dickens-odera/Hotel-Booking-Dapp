@@ -1,13 +1,15 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 import '@openzeppelin/contracts/utils/math/SafeMath.sol';
+import '@openzeppelin/contracts/utils/Counters.sol';
 import './Hotel.sol';
 
 contract Room is Hotel{
     using SafeMath for uint256;
+    using Counters for Counters.Counter;
 
     uint public totalRooms;
-    uint public roomId;
+    Counters.Counter private _roomIds;
 
     struct RoomItem{
         uint id;
@@ -25,6 +27,7 @@ contract Room is Hotel{
 
     mapping(address => RoomItem) public roomOwner;
     mapping (uint => address) public roomTenant; //who currently resides in the room
+    mapping(uint => RoomItem) public roomItemId; //to help track a room item by it's id
 
     event NewRoomCreated(address indexed user, uint date, uint id);
     event RoomNightPriceSet(address indexed user, uint price, uint indexed date);
@@ -32,7 +35,6 @@ contract Room is Hotel{
 
     constructor() public{
         totalRooms = 0;
-        roomId = 0;
     }
 
     modifier roomExists(uint _index){
@@ -56,6 +58,7 @@ contract Room is Hotel{
       require(exists == false,"Room Name Exists");
       _;
     }
+
     modifier onlyRoomOwner(uint _index){
         require(msg.sender == rooms[_index].user,"You Do Not Own This Room");
         _;
@@ -71,13 +74,15 @@ contract Room is Hotel{
     onlyOwner()
     roomNameDoesNotExist(_name)
     {
-        roomId = roomId.add(1);
+        _roomIds.increment();
+        uint currentRoomId = _roomIds.current();
         uint hotelId = hotelItems[_hotelIndex].id;
-        RoomItem memory roomItem = RoomItem(roomId,_totalBeds,hotelId,_pricePerNight, _number, false, payable(msg.sender),_name,_description);
+        RoomItem memory roomItem = RoomItem(currentRoomId,_totalBeds,hotelId,_pricePerNight, _number, false, payable(msg.sender),_name,_description);
         rooms.push(roomItem);
         roomOwner[msg.sender] = roomItem;
+        roomItemId[currentRoomId] = roomItem;
         totalRooms = totalRooms.add(1);
-        emit NewRoomCreated(msg.sender, block.timestamp, roomId);
+        emit NewRoomCreated(msg.sender, block.timestamp, currentRoomId);
     }
 
     function getRoomBioData(uint _index) public view roomExists(_index) returns(
