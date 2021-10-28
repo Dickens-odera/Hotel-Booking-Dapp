@@ -16,7 +16,7 @@ contract Hotel is Ownable, HotelBookingInterface, ReentrancyGuard {
   using Counters for Counters.Counter;
 
   uint public totalHotels; //the total number of the hotels
-  uint public hotelListingFee = 0.001 ether; //the amount to pay for your hotel to be listed on our platform
+  uint public hotelListingFee; //the amount to pay for your hotel to be listed on our platform
   Counters.Counter private _hotelIds; //hotel id to be inrecemented when a new hotel is created
 
   enum HOTEL_CATEGORY {CHAIN_HOTEL, MOTEL, RESORT, INN, ALL_SUITS, BOUTIGUE, EXTENDED_STAY} // hotel types
@@ -43,9 +43,11 @@ contract Hotel is Ownable, HotelBookingInterface, ReentrancyGuard {
   event HotelCreated(uint date, address indexed causer, uint indexed id);
   event HotelCategoryChanged(address indexed causer, uint date, HOTEL_CATEGORY indexed newCategory);
   event HotelOwnerChanged(address indexed causer, address indexed newOwner, uint date);
+  event HotelListingFeeChanged(address indexed user, uint indexed date,uint indexed fee);
 
   constructor() public {
       totalHotels = 0;
+      hotelListingFee = 0.00043 ether; //200 Ksh at the time of writing this smart contract
   }
 
   //ensure that the hotel exists in the blockchain before performing related transactions
@@ -76,6 +78,24 @@ contract Hotel is Ownable, HotelBookingInterface, ReentrancyGuard {
   modifier ownsHotel(uint _index){
       require(msg.sender == hotelItems[_index].user,"You Do Not Own This Hotel Item");
       _;
+  }
+
+  //check that this user address has hotel before adding a room
+  modifier hasListedHotel(){
+      bool isListed = false;
+      for(uint i = 0; i < hotelItems.length; i++){
+        if(msg.sender == hotelItems[i].user){
+            isListed = true;
+        }
+      }
+      require(isListed == true,"Please List A Hotel Before Adding A Room");
+      _;
+  }
+
+  function setListingFee(uint _fee) public onlyOwner{
+    require(_fee != 0,"Listing Fee Cannot be zero");
+    hotelListingFee = _fee;
+    emit HotelListingFeeChanged(msg.sender,block.timestamp, _fee);
   }
 
   function addHotel(uint _numOfRooms, string memory _name,string memory _description, string memory _location) public payable nonReentrant hotelNameExists(_name){

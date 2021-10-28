@@ -70,8 +70,9 @@ contract Room is Hotel{
     }
 
     function addRoom(uint _hotelIndex, uint _totalBeds, uint _pricePerNight, uint _number,string memory _name, string memory _description) public
+    hasListedHotel
+    ownsHotel(_hotelIndex)
     hotelExists(_hotelIndex)
-    onlyOwner()
     roomNameDoesNotExist(_name)
     {
         _roomIds.increment();
