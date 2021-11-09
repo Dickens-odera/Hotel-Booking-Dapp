@@ -16,7 +16,7 @@ contract Hotel is Ownable, HotelBookingInterface, ReentrancyGuard {
   using Counters for Counters.Counter;
 
   uint public totalHotels = 0; //the total number of the hotels
-  uint public hotelListingFee = 1 ether;//0.00043 ether; //200 Ksh at the time of writing this smart contract
+  uint public hotelListingFee = 0.00043 ether; //200 Ksh at the time of writing this smart contract
   Counters.Counter private _hotelIds; //hotel id to be inrecemented when a new hotel is created
 
   enum HOTEL_CATEGORY {CHAIN_HOTEL, MOTEL, RESORT, INN, ALL_SUITS, BOUTIGUE, EXTENDED_STAY} // hotel types
