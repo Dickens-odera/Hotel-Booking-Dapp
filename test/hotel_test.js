@@ -12,7 +12,7 @@ contract("Hotel", async(accounts) => {
     [alice,bob] = accounts;
   });
 
-  it("should assert true", async() => {
+  it("gets deployed successfully", async() => {
     return assert(hotelIntance,"Contract deployed successfully");
   });
 
@@ -28,19 +28,14 @@ contract("Hotel", async(accounts) => {
         hotelType:1
     };
     let result = await hotelIntance.addHotel(
-      newHotel.id,
       newHotel.numOfRooms,
-      newHotel.date,
       newHotel.name,
-      newHotel.hotelType,
       newHotel.description,
       newHotel.location,
-      alice,
       {from:alice, value:amount});
 
       assert(result.receipt.status,true);
-      assert(result.logs[0].args.id, newHotel,id);
       assert(result.logs[0].args.causer, alice);
-      assert.equal(hotelIntance.totalHotels(), 1);
+      //assert.equal(hotelIntance.totalHotels.call(alice), 1);
   });
 });
