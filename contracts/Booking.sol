@@ -28,23 +28,23 @@ contract Booking is Room{
     totalBookings = 0;
   }
 
-  function bookRoom(uint _index,uint _numOfNights) public payable nonReentrant roomExists(_index) isNotBooked(_index){
-    RoomItem storage room = rooms[_index];
+  function bookRoom(uint _roomId,uint _numOfNights) public payable nonReentrant roomExists(_roomId) isNotBooked(_roomId){
+    RoomItem storage room = roomItemId[_roomId];
     uint totalPayableAmount = _numOfNights.mul(room.pricePerNight);
     require(msg.sender != room.user,"You cannot book your own room");
     require(msg.sender.balance >= totalPayableAmount,"Insufficient Funds");
-    //require(totalPayableAmount == msg.value,"Please enter the correct amount");
     require(_numOfNights != 0,"Number of nights cannot be zero");
+    require(msg.value == totalPayableAmount * 1 ether,"Please pay the booking fee based on number of nights to be spent");
     _bookingIds.increment();
     uint currentBookingId = _bookingIds.current();
     room.user.transfer(msg.value);
-    _setBooked(_index);
+    _setBooked(_roomId);
     _registerBooking(room.id,currentBookingId,msg.value, payable(msg.sender));
     roomTenant[room.id] = msg.sender;
   }
 
-  function checkOut(uint _index) public payable nonReentrant {
-    RoomItem storage room = rooms[_index];
+  function checkOut(uint _roomId) public payable nonReentrant {
+    RoomItem storage room = roomItemId[_roomId];
     require(room.isBooked == true,"Room is not booked");
     require(msg.sender == roomTenant[room.id],"You currently dont reside in this room");
     room.isBooked = false;

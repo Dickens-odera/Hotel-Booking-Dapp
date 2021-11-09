@@ -15,8 +15,8 @@ contract Hotel is Ownable, HotelBookingInterface, ReentrancyGuard {
   using SafeMath for uint256;
   using Counters for Counters.Counter;
 
-  uint public totalHotels; //the total number of the hotels
-  uint public hotelListingFee; //the amount to pay for your hotel to be listed on our platform
+  uint public totalHotels = 0; //the total number of the hotels
+  uint public hotelListingFee = 1 ether;//0.00043 ether; //200 Ksh at the time of writing this smart contract
   Counters.Counter private _hotelIds; //hotel id to be inrecemented when a new hotel is created
 
   enum HOTEL_CATEGORY {CHAIN_HOTEL, MOTEL, RESORT, INN, ALL_SUITS, BOUTIGUE, EXTENDED_STAY} // hotel types
@@ -37,7 +37,10 @@ contract Hotel is Ownable, HotelBookingInterface, ReentrancyGuard {
 
   HotelItem[] public hotelItems; //hotels array of the Hotel struct above
 
+  mapping(uint => HotelItem) public hotelItemId;
   mapping(address => HotelItem) public hotelOwner; //the owner of this hotel
+  mapping(uint => bool) public existingHotelItemId;
+  mapping(string => bool) public existingHotelItemName;
 
   //events
   event HotelCreated(uint date, address indexed causer, uint indexed id);
@@ -46,48 +49,33 @@ contract Hotel is Ownable, HotelBookingInterface, ReentrancyGuard {
   event HotelListingFeeChanged(address indexed user, uint indexed date,uint indexed fee);
 
   constructor() public {
-      totalHotels = 0;
-      hotelListingFee = 0.00043 ether; //200 Ksh at the time of writing this smart contract
+
   }
 
   //ensure that the hotel exists in the blockchain before performing related transactions
-  modifier hotelExists(uint _index){
-      bool hotelAlreadyExists = false;
-      for(uint i = 0; i < hotelItems.length; i++){
-          if(i == _index){
-              hotelAlreadyExists = true;
-          }
-      }
-      require(hotelAlreadyExists == true,"Hotel Does Not Exist");
+  modifier hotelExists(uint _hotelId){
+      require(existingHotelItemId[_hotelId] == true,"Hotel Does Not Exist");
       _;
   }
 
   //to avoid duplicate hotel names in the contract
   modifier hotelNameExists(string memory _name){
-     bool exists = false;
-     for(uint i = 0; i < hotelItems.length; i++){
-         if(keccak256(abi.encodePacked(hotelItems[i].name)) == keccak256(abi.encodePacked(_name))){
-             exists = true;
-         }
-     }
-     require(exists == false,"Hotel Name Exists");
+     require(existingHotelItemName[_name] == false,"Hotel Name Exists");
      _;
   }
 
   //ensure the transactionsender owns this hotel before the transaction
-  modifier ownsHotel(uint _index){
-      require(msg.sender == hotelItems[_index].user,"You Do Not Own This Hotel Item");
+  modifier ownsHotel(uint _hotelId){
+      require(msg.sender == hotelItemId[_hotelId].user,"You Do Not Own This Hotel Item");
       _;
   }
 
   //check that this user address has hotel before adding a room
-  modifier hasListedHotel(){
+  modifier hasListedHotel(uint _hotelId){
       bool isListed = false;
-      for(uint i = 0; i < hotelItems.length; i++){
-        if(msg.sender == hotelItems[i].user){
+        if(msg.sender == hotelItemId[_hotelId].user){
             isListed = true;
         }
-      }
       require(isListed == true,"Please List A Hotel Before Adding A Room");
       _;
   }
@@ -98,14 +86,16 @@ contract Hotel is Ownable, HotelBookingInterface, ReentrancyGuard {
     emit HotelListingFeeChanged(msg.sender,block.timestamp, _fee);
   }
 
-  function addHotel(uint _numOfRooms, string memory _name,string memory _description, string memory _location) public payable nonReentrant hotelNameExists(_name){
+  function addHotel(uint _numOfRooms, string memory _name,string memory _description, string memory _location) public hotelNameExists(_name) nonReentrant payable{
     require(msg.value == hotelListingFee,"Invalid Listing Fee");
     _hotelIds.increment();
     uint currentHotelId = _hotelIds.current();
-    HotelItem memory hotel = HotelItem(currentHotelId, _numOfRooms, block.timestamp, _name, DEFAULT_HOTEL_TYPE,_description, _location, payable(msg.sender));
-    hotelItems.push(hotel);
-    hotelOwner[msg.sender] = hotel;
+    hotelItemId[currentHotelId] = HotelItem(currentHotelId, _numOfRooms, block.timestamp, _name, DEFAULT_HOTEL_TYPE,_description, _location, payable(msg.sender));
+    hotelItems.push(hotelItemId[currentHotelId]);
+    hotelOwner[msg.sender] = hotelItemId[currentHotelId];
     totalHotels = totalHotels.add(1);
+    existingHotelItemId[currentHotelId] = true;
+    existingHotelItemName[_name] = true;
     payable(owner()).transfer(msg.value);
     emit HotelCreated(block.timestamp, msg.sender, currentHotelId);
   }
@@ -114,7 +104,7 @@ contract Hotel is Ownable, HotelBookingInterface, ReentrancyGuard {
       return hotelItems;
   }
 
-  function getHotelBioData(uint _index) public view hotelExists(_index) returns(
+  function getHotelBioData(uint _hotelId) public view hotelExists(_hotelId) returns(
       uint _id,
       uint _totalRooms,
       uint _date,
@@ -123,7 +113,7 @@ contract Hotel is Ownable, HotelBookingInterface, ReentrancyGuard {
       string memory _location,
       HOTEL_CATEGORY _category
       ){
-    HotelItem storage hotelItem = hotelItems[_index];
+    HotelItem storage hotelItem = hotelItemId[_hotelId];
     _id = hotelItem.id;
     _totalRooms = hotelItem.totalRooms;
     _date = hotelItem.creationDate;
@@ -133,25 +123,25 @@ contract Hotel is Ownable, HotelBookingInterface, ReentrancyGuard {
     _category = hotelItem.hotelCategory;
   }
 
-  function changeHotelCategory(uint _index, HOTEL_CATEGORY _category) public hotelExists(_index) ownsHotel(_index) {
-     HotelItem storage hotelItem = hotelItems[_index];
+  function changeHotelCategory(uint _hotelId, HOTEL_CATEGORY _category) public hotelExists(_hotelId) ownsHotel(_hotelId) {
+     HotelItem storage hotelItem = hotelItemId[_hotelId];
      assert(_category != DEFAULT_HOTEL_TYPE);
      assert(_category != hotelItem.hotelCategory);
      hotelItem.hotelCategory = _category;
      emit HotelCategoryChanged(msg.sender, block.timestamp, _category);
   }
 
-  function getName(uint _index) external virtual view override hotelExists(_index) returns(string memory){
-      return hotelItems[_index].name;
+  function getName(uint _hotelId) external virtual view override hotelExists(_hotelId) returns(string memory){
+      return hotelItemId[_hotelId].name;
   }
 
-  function getId(uint _index) external virtual view override hotelExists(_index) returns(uint){
-      return hotelItems[_index].id;
+  function getId(uint _hotelId) external virtual view override hotelExists(_hotelId) returns(uint){
+      return hotelItemId[_hotelId].id;
   }
 
-  function changeHotelOwner(address payable _newOwner, uint _index) public hotelExists(_index) ownsHotel(_index){
+  function changeHotelOwner(address payable _newOwner, uint _hotelId) public hotelExists(_hotelId) ownsHotel(_hotelId){
       require(msg.sender != _newOwner,"You are the rightful owner already");
-      hotelItems[_index].user = _newOwner;
+      hotelItemId[_hotelId].user = _newOwner;
       emit HotelOwnerChanged(msg.sender, _newOwner, block.timestamp);
   }
 }

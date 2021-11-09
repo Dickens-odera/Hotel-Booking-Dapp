@@ -8,7 +8,7 @@ contract Room is Hotel{
     using SafeMath for uint256;
     using Counters for Counters.Counter;
 
-    uint public totalRooms;
+    uint public totalRooms = 0;
     Counters.Counter private _roomIds;
 
     struct RoomItem{
@@ -26,67 +26,58 @@ contract Room is Hotel{
     RoomItem[] public rooms;
 
     mapping(address => RoomItem) public roomOwner;
-    mapping (uint => address) public roomTenant; //who currently resides in the room
+    mapping(uint => address) public roomTenant; //who currently resides in the room
     mapping(uint => RoomItem) public roomItemId; //to help track a room item by it's id
+    mapping(uint => bool) public existingRoomItem;
+    mapping(string => bool) public existingRoomItemName;
 
     event NewRoomCreated(address indexed user, uint date, uint id);
     event RoomNightPriceSet(address indexed user, uint price, uint indexed date);
     event RoomBooked(uint date, address indexed tenant, uint indexed amountPaid, uint indexed roomId);
 
     constructor() public{
-        totalRooms = 0;
+
     }
 
-    modifier roomExists(uint _index){
-        bool exists = false;
-        for(uint i = 0; i < rooms.length; i++){
-            if(i == _index){
-                exists = true;
-            }
-        }
-        require(exists == true,"Room Does Not Exist");
+    modifier roomExists(uint _roomId){
+        require(existingRoomItem[_roomId] == true,"Room Does Not Exist");
         _;
     }
 
     modifier roomNameDoesNotExist(string memory _name) {
-      bool exists = false;
-      for(uint i = 0; i < rooms.length; i++){
-          if(keccak256(abi.encodePacked(rooms[i].name)) == keccak256(abi.encodePacked(_name))){
-              exists = true;
-          }
-      }
-      require(exists == false,"Room Name Exists");
+      require(existingRoomItemName[_name] == false,"Room Name Exists");
       _;
     }
 
-    modifier onlyRoomOwner(uint _index){
-        require(msg.sender == rooms[_index].user,"You Do Not Own This Room");
+    modifier onlyRoomOwner(uint _roomId){
+        require(msg.sender == roomItemId[_roomId].user,"You Do Not Own This Room");
         _;
     }
 
-    modifier isNotBooked(uint _index){
-      require(rooms[_index].isBooked == false,"Room is occupied");
+    modifier isNotBooked(uint _roomId){
+      require(roomItemId[_roomId].isBooked == false,"Room is occupied");
       _;
     }
 
-    function addRoom(uint _hotelIndex, uint _totalBeds, uint _pricePerNight, uint _number,string memory _name, string memory _description) public
-    hasListedHotel
-    ownsHotel(_hotelIndex)
-    hotelExists(_hotelIndex)
+    function addRoom(uint _hotelId, uint _totalBeds, uint _pricePerNight, uint _number,string memory _name, string memory _description) public
+    hasListedHotel(_hotelId)
+    ownsHotel(_hotelId)
+    hotelExists(_hotelId)
     roomNameDoesNotExist(_name)
     {
         _roomIds.increment();
         uint currentRoomId = _roomIds.current();
-        uint hotelId = hotelItems[_hotelIndex].id;
-        RoomItem memory roomItem = RoomItem(currentRoomId,_totalBeds,hotelId,_pricePerNight, _number, false, payable(msg.sender),_name,_description);
-        rooms.push(roomItem);
-        roomOwner[msg.sender] = roomItem;
-        roomItemId[currentRoomId] = roomItem;
+        uint hotelId = hotelItemId[_hotelId].id;
+        roomItemId[currentRoomId]  = RoomItem(currentRoomId,_totalBeds,hotelId,_pricePerNight, _number, false, payable(msg.sender),_name,_description);
+        rooms.push(roomItemId[currentRoomId]);
+        roomOwner[msg.sender] = roomItemId[currentRoomId];
         totalRooms = totalRooms.add(1);
+        existingRoomItem[currentRoomId] = true;
+        existingRoomItemName[_name] = true;
         emit NewRoomCreated(msg.sender, block.timestamp, currentRoomId);
     }
 
-    function getRoomBioData(uint _index) public view roomExists(_index) returns(
+    function getRoomBioData(uint _roomId) public view roomExists(_roomId) returns(
         uint _id,
         uint _numOfBeds,
         uint _hotelId,
@@ -97,7 +88,7 @@ contract Room is Hotel{
         string memory _name,
         string memory _description)
         {
-            RoomItem storage room = rooms[_index];
+            RoomItem storage room = roomItemId[_roomId];
             _id = room.id;
             _numOfBeds = room.totalBeds;
             _hotelId = room.hotelId;
@@ -109,22 +100,22 @@ contract Room is Hotel{
             _description = room.description;
         }
 
-    function getName(uint _index) external virtual view override returns(string memory){
-      return rooms[_index].name;
+    function getName(uint _roomId) external virtual view override returns(string memory){
+      return roomItemId[_roomId].name;
     }
 
-    function getId(uint _index) external virtual view override returns(uint){
-        return rooms[_index].id;
+    function getId(uint _roomId) external virtual view override returns(uint){
+        return roomItemId[_roomId].id;
     }
 
-    function setNightPrice(uint _index, uint _price) public onlyRoomOwner(_index){
+    function setNightPrice(uint _roomId, uint _price) public onlyRoomOwner(_roomId){
         require(_price != 0,"price Cannot be zero");
-        rooms[_index].pricePerNight = _price;
+        roomItemId[_roomId].pricePerNight = _price;
         emit RoomNightPriceSet(msg.sender, _price, block.timestamp);
     }
 
-    function _setBooked(uint _index) internal roomExists(_index){
-        rooms[_index].isBooked = true;
+    function _setBooked(uint _roomId) internal roomExists(_roomId){
+        roomItemId[_roomId].isBooked = true;
     }
 
     function listRooms() public view returns(RoomItem[] memory){
