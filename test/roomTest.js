@@ -7,12 +7,16 @@ contract("Room", async(accounts) => {
   let hotelInstance;
   let hotelId;
   let roomId;
+  let roomNightprice;
+  let listingFeeToPay;
   before( async() => {
     roomInstance = await Room.deployed();
     hotelInstance = await Hotel.deployed();
     [owner,alice, bob] = accounts;
     hotelId = 1;
     roomId = 1;
+    roomNightprice = await web3.utils.toWei("0.0025", "ether");
+    listingFeeToPay = await web3.utils.toWei("0.00043","ether");
   });
 
   it("gets deployed sucessfully", async () => {
@@ -20,7 +24,6 @@ contract("Room", async(accounts) => {
   });
 
   it('can add a hotel before adding a room', async() =>{
-    const amount = await web3.utils.toWei("0.00043","ether");
     const newHotel = {
         id:hotelId,
         name:"Crypto Hotel",
@@ -35,7 +38,7 @@ contract("Room", async(accounts) => {
       newHotel.name,
       newHotel.description,
       newHotel.location,
-      {from:alice, value:amount});
+      {from:alice, value:listingFeeToPay});
 
       const totalHotels = await roomInstance.totalHotels();
       const listingFee = await roomInstance.hotelListingFee();
@@ -43,7 +46,7 @@ contract("Room", async(accounts) => {
       assert(result.receipt.status,true);
       assert(result.logs[0].args.causer, alice);
       assert.equal(totalHotels,1);
-      assert.equal(listingFee, amount);
+      assert.equal(listingFee, listingFeeToPay);
   });
 
   it('can add a room', async() => {
@@ -55,11 +58,11 @@ contract("Room", async(accounts) => {
         id:id,
         totalBeds:4,
         hotelId:hotelId,
-        pricePerNight: web3.utils.toWei('0.000064', 'ether'),
+        pricePerNight: roomNightprice,
         number:1,
         isBooked:false,
         user:alice,
-        name:"First Name",
+        name:"First Room Name",
         description:"This is the first room"
       };
       const result = await roomInstance.addRoom(
@@ -82,10 +85,9 @@ contract("Room", async(accounts) => {
 
   it('can set room night price', async() => {
     const roomItem = await roomInstance.roomItemId(roomId);
-    const price = await web3.utils.toWei("0.0025", "ether");
-    const preViousPrice = roomItem.setNightPrice;
+    const preViousPrice = roomItem.pricePerNight;
 
-    const result = await roomInstance.setNightPrice(roomId, price,{ from: alice});
+    const result = await roomInstance.setNightPrice(roomId, roomNightprice,{ from: alice});
     const newPrice = await roomInstance.roomItemId(roomId);
 
     assert(result.receipt.status,true);
@@ -96,6 +98,20 @@ contract("Room", async(accounts) => {
   });
 
   it('can only allow a room owner to set a room\'s night price', async() => {
+    try{
+      const result = await roomInstance.setNightPrice(roomId,roomNightprice, {from: bob});
+    }catch(err){
+      assert(err.message.includes("You Do Not Own This Room"));
+      return;
+    }
+    assert(false);
+  });
 
+  it('can fetch a room\'s details by room id ', async() => {
+      const room = await roomInstance.roomItemId(roomId);
+      const result = await roomInstance.getRoomBioData(room.id);
+      const roomName = result._name;
+
+      assert.equal(roomName,'First Room Name');
   });
 });
