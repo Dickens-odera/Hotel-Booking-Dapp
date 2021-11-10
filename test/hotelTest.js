@@ -96,4 +96,19 @@ contract("Hotel", async(accounts) => {
     assert(result.logs[0].args.date, new Date().getTime());
   });
 
+  it('should only allow a hotel owner to change hotel ownership', async() => {
+    try{
+      const result = await hotelInstance.changeHotelCategory(bob, hotelId,{from:alice});
+      assert(result.receipt.status,false);
+    }catch(e){
+      assert(e.message.includes('You Do Not Own This Hotel Item'));
+    }
+    assert(false);
+  });
+
+  it('can return hotel name by hotel id', async() => {
+      const hotel = await hotelInstance.hotelItemId(hotelId);
+      const hotelName = await hotelInstance.getName(hotelId);
+      assert.equal(hotel.name,hotelName);
+  });
 });
