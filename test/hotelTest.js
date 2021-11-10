@@ -3,9 +3,11 @@ const web3 = require('web3');
 
 contract("Hotel", async(accounts) => {
   let hotelInstance;
+  let hotelId;
   beforeEach( async() => {
     hotelInstance = await Hotel.deployed();
     [owner,alice,bob] = accounts;
+    hotelId = 1;
   });
 
   it("gets deployed successfully", async() => {
@@ -15,7 +17,7 @@ contract("Hotel", async(accounts) => {
   it('can add a new hotel', async() => {
     const amount = await web3.utils.toWei("0.00043","ether");
     const newHotel = {
-        id:1,
+        id:hotelId,
         name:"Crypto Hotel",
         numOfRooms:10,
         description:"Some dummy crypto hotel name",
@@ -52,13 +54,13 @@ contract("Hotel", async(accounts) => {
   });
 
   it('should change a hotel category', async() => {
-      const hotel = await hotelInstance.hotelItemId(1);
+      const hotel = await hotelInstance.hotelItemId(hotelId);
       const currentCategory = hotel.hotelCategory;
       const hotelOwner = hotel.user;
       console.log(currentCategory.toNumber());
 
-      const result = await hotelInstance.changeHotelCategory(1,1,{from:alice});
-      const modifiedHotel = await hotelInstance.hotelItemId(1);
+      const result = await hotelInstance.changeHotelCategory(hotelId,1,{from:alice});
+      const modifiedHotel = await hotelInstance.hotelItemId(hotelId);
       const newlyChangedCategory = modifiedHotel.hotelCategory;
 
       assert(result.receipt.status, true);
@@ -70,10 +72,10 @@ contract("Hotel", async(accounts) => {
 
   it('should ensure that only a hotel owner changes a hotel category for a hotel they own', async() => {
     try{
-      const hotel = await hotelInstance.hotelItemId(1);
+      const hotel = await hotelInstance.hotelItemId(hotelId);
       const hotelOwner = hotel.user;
       console.log(hotelOwner);
-      const result = await hotelInstance.changeHotelCategory(1,1,{from:bob});
+      const result = await hotelInstance.changeHotelCategory(hotelId,1,{from:bob});
 
       assert(hotelOwner !== bob,"Unauthorized user is trying to change a category for a hotel they do not own");
     }catch(e){
@@ -81,6 +83,17 @@ contract("Hotel", async(accounts) => {
       return;
     }
     assert(false);
+  });
+
+  it('should enable a hotel owner to change hotel ownership to a new address', async() => {
+    const result = await hotelInstance.changeHotelOwner(bob,hotelId,{from:alice});
+    const hotel = await hotelInstance.hotelItemId(hotelId);
+
+    assert(result.receipt.status,true);
+    assert(hotel.user,bob);
+    assert(result.logs[0].args.causer, alice);
+    assert(result.logs[0].args.newOwner, bob);
+    assert(result.logs[0].args.date, new Date().getTime());
   });
 
 });
