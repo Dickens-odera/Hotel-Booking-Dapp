@@ -19,13 +19,13 @@ contract Booking is Room{
 
   BookingItem[] public bookings;
 
-  uint public totalBookings;
+  uint public totalBookings = 0;
   Counters.Counter private _bookingIds;
 
   event CheckoutSuccessfull(address indexed tenant, uint indexed roomId, uint indexed date);
 
   constructor() public {
-    totalBookings = 0;
+
   }
 
   function bookRoom(uint _roomId,uint _numOfNights) public payable nonReentrant roomExists(_roomId) isNotBooked(_roomId){
