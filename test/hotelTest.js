@@ -4,18 +4,22 @@ const web3 = require('web3');
 contract("Hotel", async(accounts) => {
   let hotelInstance;
   let hotelId;
+  let address;
   beforeEach( async() => {
     hotelInstance = await Hotel.deployed();
     [owner,alice,bob] = accounts;
     hotelId = 1;
+    address = await hotelInstance.address;
   });
-
+  console.log(address);
   it("gets deployed successfully", async() => {
     return assert(hotelInstance,"Contract deployed successfully");
   });
-
+  console.log(address);
   it('can add a new hotel', async() => {
     const amount = await web3.utils.toWei("0.00043","ether");
+    //let balance = await web3.eth.getBalance(address);
+    //console.log(balance);
     const newHotel = {
         id:hotelId,
         name:"Crypto Hotel",
@@ -74,7 +78,6 @@ contract("Hotel", async(accounts) => {
     try{
       const hotel = await hotelInstance.hotelItemId(hotelId);
       const hotelOwner = hotel.user;
-      console.log(hotelOwner);
       const result = await hotelInstance.changeHotelCategory(hotelId,1,{from:bob});
 
       assert(hotelOwner !== bob,"Unauthorized user is trying to change a category for a hotel they do not own");
@@ -99,9 +102,9 @@ contract("Hotel", async(accounts) => {
   it('should only allow a hotel owner to change hotel ownership', async() => {
     try{
       const result = await hotelInstance.changeHotelCategory(bob, hotelId,{from:alice});
-      assert(result.receipt.status,false);
-    }catch(e){
-      assert(e.message.includes('You Do Not Own This Hotel Item'));
+    }catch(err){
+      assert(err.message.includes("You Do Not Own This Hotel Item"));
+      return;
     }
     assert(false);
   });
