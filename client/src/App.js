@@ -1,20 +1,14 @@
-function App() {
-  return (
-    <div className="container">
-        <nav className="navbar navbar-dark bg-dark">
-          <div className="container-fluid">
-            <a className="navbar-brand text-center" href="#">
-              <h2>Hotel Booking DApp</h2>
-            </a>
-          </div>
-        </nav>
-        <div className="row">
-            <div className="col-md-12">
-                <p>List Hotels Here</p>
-            </div>
-        </div>
-    </div>
-  );
-}
+import React, {Component} from 'react';
+import Navbar from './components/Navbar';
+import HotelList from './components/HotelList';
 
-export default App;
+export default class App extends Component {
+    render(){
+      return (
+          <React.Fragment>
+            <Navbar />
+            <HotelList />
+          </React.Fragment>
+      );
+    }
+}
