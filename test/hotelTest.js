@@ -18,7 +18,7 @@ contract("Hotel", async(accounts) => {
   console.log(address);
   it('can add a new hotel', async() => {
     const amount = await web3.utils.toWei("0.00043","ether");
-    //let balance = await web3.eth.getBalance(address);
+    //let balance = await web3.eth.getBalance(owner);
     //console.log(balance);
     const newHotel = {
         id:hotelId,
