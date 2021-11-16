@@ -30,6 +30,8 @@ contract Booking is Room{
 
   function _registerBooking(uint _roomId, uint _bookingId,uint _amountPaid, address payable _tenant) internal{
     assert(_tenant != address(0));
+    require(msg.sender != address(0));
+    require(_bookingId != 0,"Booking ID cannot be zero");
     BookingItem memory newBooking = BookingItem(_roomId,_bookingId, block.timestamp,_amountPaid,_tenant);
     bookings.push(newBooking);
     totalBookings = totalBookings.add(1);

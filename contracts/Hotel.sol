@@ -61,6 +61,7 @@ contract Hotel is Ownable, HotelBookingInterface, ReentrancyGuard {
   //to avoid duplicate hotel names in the contract
   modifier hotelNameExists(string memory _name){
      require(existingHotelItemName[_name] == false,"Hotel Name Exists");
+     require(bytes(_name).length > 0,"Please specify the hotel name");
      _;
   }
 
@@ -87,7 +88,11 @@ contract Hotel is Ownable, HotelBookingInterface, ReentrancyGuard {
   }
 
   function addHotel(uint _numOfRooms, string memory _name,string memory _description, string memory _location) public hotelNameExists(_name) nonReentrant payable{
+    require(msg.sender != address(0));
     require(msg.value == hotelListingFee,"Invalid Listing Fee");
+    require(_numOfRooms != 0,"Number of rooms cannot be zero");
+    require(bytes(_description).length > 0,"Please specify the hotel description");
+    require(bytes(_location).length > 0,"Please specify the location of the hotel");
     _hotelIds.increment();
     uint currentHotelId = _hotelIds.current();
     hotelItemId[currentHotelId] = HotelItem(currentHotelId, _numOfRooms, block.timestamp, _name, DEFAULT_HOTEL_TYPE,_description, _location, payable(msg.sender));
@@ -141,6 +146,7 @@ contract Hotel is Ownable, HotelBookingInterface, ReentrancyGuard {
 
   function changeHotelOwner(address payable _newOwner, uint _hotelId) public hotelExists(_hotelId) ownsHotel(_hotelId){
       require(msg.sender != _newOwner,"You are the rightful owner already");
+      require(_newOwner != address(0),"Please specify a valid ETH address");
       hotelItemId[_hotelId].user = _newOwner;
       emit HotelOwnerChanged(msg.sender, _newOwner, block.timestamp);
   }

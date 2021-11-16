@@ -45,6 +45,7 @@ contract Room is Hotel{
     }
 
     modifier roomNameDoesNotExist(string memory _name) {
+      require(bytes(_name).length > 0,"Please specify the room name");
       require(existingRoomItemName[_name] == false,"Room Name Exists");
       _;
     }
@@ -65,6 +66,10 @@ contract Room is Hotel{
     hotelExists(_hotelId)
     roomNameDoesNotExist(_name)
     {
+        require(msg.sender != address(0));
+        require(_totalBeds != 0,"Number of beds cannot be zero");
+        require(bytes(_description).length > 0,"Please specify the room description");
+        require(_pricePerNight != 0,"The room night price cannot be zero");
         _roomIds.increment();
         uint currentRoomId = _roomIds.current();
         uint hotelId = hotelItemId[_hotelId].id;
