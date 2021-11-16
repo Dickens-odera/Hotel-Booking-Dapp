@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import Navbar from './components/Navbar';
+import NewHotel from './components/NewHotel';
 import HotelList from './components/HotelList';
 import Web3 from 'web3';
 import HotelContract from '../src/abi/Hotel.json';
@@ -13,6 +14,7 @@ export default class App extends Component {
       totalHotels: null,
       hotels: [],
       hotelListingFee:null,
+      loading:true,
     }
   }
 
@@ -72,6 +74,10 @@ export default class App extends Component {
       return (
           <React.Fragment>
           <Navbar account={this.state.account}/>
+          <NewHotel hotelContract={this.state.hotelContractABI}
+            listingFee={this.state.hotelListingFee}
+            account={this.state.account}
+            />
           <HotelList hotelContract={this.state.hotelContractABI} 
                      totalHotels={this.state.totalHotels}
                      listingFee={this.state.hotelListingFee}

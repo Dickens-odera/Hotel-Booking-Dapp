@@ -1,6 +1,5 @@
 import React,{ Component, useState } from 'react';
 import Web3 from 'web3';
-import NewHotel from './NewHotel';
 const web3 = window.web3;
 
 export default class  HotelList extends Component {
@@ -25,8 +24,7 @@ export default class  HotelList extends Component {
 
     render(){
         return (
-            <div className="container">
-                <NewHotel />
+            <div className="container mb-2">
                 <h6>Total Hotels: { this.props.totalHotels}</h6>
                 <h6>Listing Fee: { this.props.listingFee } ETH</h6>
                 {this.props.hotels.map((hotel, index) => {
