@@ -10,6 +10,9 @@ export default class App extends Component {
     this.state = {
       account: "",
       hotelContractABI:null,
+      totalHotels: null,
+      hotels: [],
+      hotelListingFee:null,
     }
   }
 
@@ -31,7 +34,9 @@ export default class App extends Component {
   }
 
   async loadBlockchain(){
-    const web3 = window.web3;
+    let totalNumberOfHotels;
+    let listingFee;
+    const web3 = await window.web3;
     const accounts = await web3.eth.getAccounts().then((accounts) => {
       this.setState({ account: accounts[0]});
     });
@@ -39,8 +44,25 @@ export default class App extends Component {
     const netWorkID = await web3.eth.net.getId();
     const hotelContractData = HotelContract.networks[netWorkID];
     if (hotelContractData){
+      //set the contract ABI
       const hotelContract = await new web3.eth.Contract(HotelContract.abi, hotelContractData.address);
       this.setState({ hotelContractABI: hotelContract });
+
+      //fetch total Number of hotels
+      totalNumberOfHotels = await this.state.hotelContractABI.methods.totalHotels().call().then((total) => {
+        console.log("Total Hotels: ", total);
+        this.setState({ totalHotels: total });
+      }).catch((err) => {
+        console.log(err);
+      });
+
+      //fetch listing fee
+      listingFee = await this.state.hotelContractABI.methods.hotelListingFee().call().then((fee) => {
+        const feeAmount = web3.utils.fromWei(fee.toString(), "ether");
+        this.setState({ hotelListingFee: feeAmount });
+      }).catch((err) => {
+        console.log(err);
+      })
     }else{
       window.alert("Failed to fectch hotel contract");
     }
@@ -50,7 +72,11 @@ export default class App extends Component {
       return (
           <React.Fragment>
           <Navbar account={this.state.account}/>
-          <HotelList hotelContract={this.state.hotelContractABI} />
+          <HotelList hotelContract={this.state.hotelContractABI} 
+                     totalHotels={this.state.totalHotels}
+                     listingFee={this.state.hotelListingFee}
+                     hotels={this.state.hotels}
+                     />
           </React.Fragment>
       );
     }
