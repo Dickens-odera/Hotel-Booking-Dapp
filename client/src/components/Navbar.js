@@ -20,14 +20,14 @@ export default class Navbar extends Component{
 
                         <div className="collapse navbar-collapse" id="navbarTogglerDemo02">
                             <ul className="navbar-nav mr-auto mt-2 mt-lg-0">
-                                <li class="nav-item active">
+                                <li className="nav-item active">
                                     <a className="nav-link" href="#">Home</a>
                                 </li>
                                 <li className="nav-item">
                                     <a className="nav-link" href="#">Hotels</a>
                                 </li>
                             </ul>
-                            <span class="navbar-text mr-sm-2 float-left">
+                            <span className="navbar-text mr-sm-2 float-left">
                                 <p className="my-2 my-sm-0">{this.props.account}</p>
                             </span>
                         </div>

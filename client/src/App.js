@@ -21,6 +21,7 @@ export default class App extends Component {
   async componentWillMount(){
     await this.loadWeb3();
     await this.loadBlockchain();
+    await this.fetchHotels();
   }
 
   async loadWeb3(){
@@ -64,12 +65,24 @@ export default class App extends Component {
         this.setState({ hotelListingFee: feeAmount });
       }).catch((err) => {
         console.log(err);
-      })
+      });
     }else{
       window.alert("Failed to fectch hotel contract");
     }
   }
 
+  async fetchHotels() {
+    for (let i = 0; i < this.state.totalHotels; i++) {
+    const result = await this.state.hotelContractABI.methods.hotelItems(i).call().then((hotel) => {
+        this.setState({
+          hotels: [...this.state.hotels, hotel]
+        });
+        //console.log([this.state.hotels]);
+      }).catch((err) => {
+        console.error(err);
+      });
+    }
+  }
     render(){
       return (
           <React.Fragment>

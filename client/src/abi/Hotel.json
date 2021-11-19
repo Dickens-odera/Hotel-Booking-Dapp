@@ -30564,12 +30564,12 @@
     "5777": {
       "events": {},
       "links": {},
-      "address": "0xF17C39d1F8811dd7616cb9E94676a6dAbd7aA9eB",
-      "transactionHash": "0x0713baff4e5e736b6961af5c186c6023ff1159e0924428a82d9953615dade1b1"
+      "address": "0xC9df947e4A4B836eEC217100eE4aBAdd14c7FE60",
+      "transactionHash": "0xa075bc90f3b49e3a098dbe1fd667de75fd95fb5de2fc938fa924eb4fd39c2eec"
     }
   },
   "schemaVersion": "3.4.1",
-  "updatedAt": "2021-11-16T12:59:31.637Z",
+  "updatedAt": "2021-11-19T14:40:56.277Z",
   "networkType": "ethereum",
   "devdoc": {
     "author": "Dickens Odera dickensodera9@gmail.com*",

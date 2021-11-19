@@ -8,6 +8,7 @@ export default class NewHotel extends Component {
             hotels: [],
         }
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.clearForm = this.clearForm.bind(this);
     }
 
     async handleSubmit(event) {
@@ -19,17 +20,17 @@ export default class NewHotel extends Component {
             description:event.target.description.value,
             noOfRooms: event.target.num_of_rooms.value
         }
-        console.log(this.props.hotelContract);
         const tx = await this.props.hotelContract.methods.addHotel(
             hotel.noOfRooms,
             hotel.name,
             hotel.description,
             hotel.location).send({
                 from: await this.props.account,
-                value: web3.utils.toWei(await this.props.listingFee.toString(),"ether"),
-                gas: 300000
+                value: web3.utils.toWei(this.props.listingFee.toString(),"ether"),
+                gas: 6721975
         }).then(( result) =>{
             console.log(result);
+            window.location.reload();
         }).catch(( err) => {
             console.error(err);
         });
@@ -59,7 +60,7 @@ export default class NewHotel extends Component {
                                 </div>
                             </div>
                             <div className="form-group row mb-2">
-                                <label className="col-sm-6 col-form-label">No of Rooms:</label>
+                                <label for="num_of_rooms" className="col-sm-6 col-form-label">No of Rooms:</label>
                                 <div className="col-md-6">
                                     <input type="number" className="form-control" name="num_of_rooms" id="num_of_rooms" placeholder="Total No Of Rooms"></input>
                                 </div>
