@@ -1,6 +1,6 @@
 import React,{ Component, useState } from 'react';
 import Web3 from 'web3';
-const web3 = window.web3;
+import HotelItem from './HotelItem';
 
 export default class  HotelList extends Component {
     constructor(props){
@@ -29,7 +29,7 @@ export default class  HotelList extends Component {
                                     <p>Descrition: {hotel.description}</p>
                                     <p>Number Of Rooms: {hotel.totalRooms}</p>
                                     <p>Published By: {hotel.user}</p>
-                                    <p>Hotel Type: {hotel.hotelCategory === 0 ? "Chain Hotel":""}</p>
+                                    <p>Hotel Type: {hotel.hotelCategory == 0 ? "Chain Hotel":""}</p>
                                     <button className="btn btn-success"> View </button>
                                 </div>
                             </div>
