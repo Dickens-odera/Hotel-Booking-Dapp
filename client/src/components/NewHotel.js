@@ -5,7 +5,6 @@ export default class NewHotel extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            hotels: [],
         }
         this.handleSubmit = this.handleSubmit.bind(this);
         this.clearForm = this.clearForm.bind(this);
@@ -14,20 +13,23 @@ export default class NewHotel extends Component {
     async handleSubmit(event) {
         event.preventDefault();
         const web3 = await window.web3;
+        const fee = await this.props.listingFee;
+        const account = await this.props.account;
+        const hotelContract = await this.props.hotelContract;
         const hotel = {
             name: event.target.name.value,
             location: event.target.location.value,
             description:event.target.description.value,
             noOfRooms: event.target.num_of_rooms.value
         }
-        const tx = await this.props.hotelContract.methods.addHotel(
+        const tx = await hotelContract.methods.addHotel(
             hotel.noOfRooms,
             hotel.name,
             hotel.description,
             hotel.location).send({
-                from: await this.props.account,
-                value: web3.utils.toWei(this.props.listingFee.toString(),"ether"),
-                gas: 6721975
+                from: account,
+                value: await web3.utils.toWei(fee.toString(),"ether"),
+                gas: 21000,
         }).then(( result) =>{
             console.log(result);
             window.location.reload();

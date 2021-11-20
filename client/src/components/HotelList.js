@@ -29,7 +29,7 @@ export default class  HotelList extends Component {
                                     <p>Descrition: {hotel.description}</p>
                                     <p>Number Of Rooms: {hotel.totalRooms}</p>
                                     <p>Published By: {hotel.user}</p>
-                                    <p>Hotel Type: {hotel.hotelCategory}</p>
+                                    <p>Hotel Type: {hotel.hotelCategory === 0 ? "Chain Hotel":""}</p>
                                     <button className="btn btn-success"> View </button>
                                 </div>
                             </div>

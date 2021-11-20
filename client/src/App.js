@@ -63,25 +63,28 @@ export default class App extends Component {
       listingFee = await this.state.hotelContractABI.methods.hotelListingFee().call().then((fee) => {
         const feeAmount = web3.utils.fromWei(fee.toString(), "ether");
         this.setState({ hotelListingFee: feeAmount });
+        console.log("Listing Fee: ", feeAmount);
       }).catch((err) => {
-        console.log(err);
+        console.error(err);
       });
     }else{
-      window.alert("Failed to fectch hotel contract");
+      window.alert("Failed to fetch hotel contract");
     }
   }
 
   async fetchHotels() {
-    for (let i = 0; i < this.state.totalHotels; i++) {
-    const result = await this.state.hotelContractABI.methods.hotelItems(i).call().then((hotel) => {
+    let result;
+    for (let i = 0; i <= this.state.totalHotels; i++) {
+    result = await this.state.hotelContractABI.methods.hotelItems(i).call().then((hotel) => {
         this.setState({
           hotels: [...this.state.hotels, hotel]
         });
-        //console.log([this.state.hotels]);
       }).catch((err) => {
         console.error(err);
       });
     }
+    console.log("Hotels", ...this.state.hotels);
+
   }
     render(){
       return (
