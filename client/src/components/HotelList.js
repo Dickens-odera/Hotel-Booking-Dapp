@@ -26,8 +26,11 @@ export default class  HotelList extends Component {
                                 </div>
                                 <div className="card-body">
                                     <p>Location: {hotel.locationAddress}</p>
+                                    <p>Descrition: {hotel.description}</p>
+                                    <p>Number Of Rooms: {hotel.totalRooms}</p>
                                     <p>Published By: {hotel.user}</p>
-                                    <button className="btn btn-success"> Book </button>
+                                    <p>Hotel Type: {hotel.hotelCategory}</p>
+                                    <button className="btn btn-success"> View </button>
                                 </div>
                             </div>
                         </div>
