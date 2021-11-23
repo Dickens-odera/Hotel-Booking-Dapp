@@ -29,14 +29,14 @@ export default class  HotelList extends Component {
                                     <div className="card-title">{ hotel.name }</div>
                                 </div>
                                 <div className="card-body">
-                                    <img src={`https://ipfs.infura.io/ipfs/${hotel.imageHash}`} alte="hotel image" style={{ width: '100%', height: '200px'}}></img>
+                                    <img src={`https://ipfs.infura.io/ipfs/${hotel.imageHash}`} alt="hotel image" style={{ width: '100%', height: '200px'}} className="mb-3 img-thumbnail"></img>
                                     <p>Location: {hotel.locationAddress}</p>
                                     <p>Descrition: {hotel.description}</p>
                                     <p>Number Of Rooms: {hotel.totalRooms}</p>
                                     <p>Published By: {hotel.user}</p>
                                     <p>Hotel Type: {hotel.hotelCategory == 0 ? "Chain Hotel":""}</p>
                                     <p>Image Hash: {hotel.imageHash}</p>
-                                    <button className="btn btn-success"> View </button>
+                                    <button className="btn btn-success"> View Rooms </button>
                                 </div>
                             </div>
                         </div>
