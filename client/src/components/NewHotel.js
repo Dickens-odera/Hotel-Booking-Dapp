@@ -1,18 +1,57 @@
 import React, { Component } from 'react';
 import Web3 from 'web3';
+import ipfs from '../ipfs';
 
 export default class NewHotel extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            imageBuffer: null,
+            ipfsImageHash: null,
         }
         this.handleSubmit = this.handleSubmit.bind(this);
         this.clearForm = this.clearForm.bind(this);
+        this.capturePhoto = this.capturePhoto.bind(this);
+        this.fetchImageHash = this.fetchImageHash.bind(this);
+    }
+
+    async componentWillMount() {
+
+    }
+
+    async capturePhoto(event){
+        event.preventDefault();
+        const file = event.target.files[0];
+        const reader = await new window.FileReader();
+        reader.readAsArrayBuffer(file);
+        reader.onloadend = () => {
+            this.setState({ imageBuffer: Buffer(reader.result) });
+            console.log("Image Buffer: ", this.state.imageBuffer)
+        }
+        await this.fetchImageHash();
+    }
+
+    async fetchImageHash(){
+        await ipfs.files.add(this.state.imageBuffer, (error, result) => {
+            if(error){
+                console.error(error);
+                return;
+            }else{
+                this.setState({ ipfsImageHash: result[0].hash });
+                console.log("Ipfs Image Hash:", this.state.ipfsImageHash);
+            }
+        });
+        return this.state.ipfsImageHash;
+    }
+
+    async setImageHash(event){
+        const web3 = await this.props.provider;
     }
 
     async handleSubmit(event) {
         event.preventDefault();
-        const web3 = await window.web3;
+        //const imageHash = await this.fetchImageHash();
+        const web3 = await this.props.provider;
         const fee = await this.props.listingFee;
         const account = await this.props.account;
         const hotelContract = await this.props.hotelContract;
@@ -26,13 +65,20 @@ export default class NewHotel extends Component {
             hotel.noOfRooms,
             hotel.name,
             hotel.description,
-            hotel.location).send({
+            hotel.location,
+            this.props.ipfsImageHash
+            ).send({
                 from: account,
                 value: await web3.utils.toWei(fee.toString(),"ether"),
-                gas: 21000,
+                gas: 6721975,
         }).then(( result) =>{
+            console.log("Image Hash after file uplaod",this.state.ipfsImageHash);
+            //console.log(tx);
             console.log(result);
-            window.location.reload();
+            const hotelItem = this.hotelContract.methods.hotelItemId(result.logs[0].args.id);
+            console.log("Hotel Item",hotelItem);
+            //const hotelItem = await hotelContract.methods.setImageHash()
+            //window.location.reload();
         }).catch(( err) => {
             console.error(err);
         });
@@ -76,7 +122,7 @@ export default class NewHotel extends Component {
                             <div className="form-group row mb-2">
                                 <label for="file" className="col-sm-6 col-form-label">Photo</label>
                                 <div className="col-sm-6">
-                                    <input type="file" accept=".jpg, .png, .svg" name="image" id="image" placeholder="Upload File"/>
+                                    <input type="file" onChange={this.capturePhoto} accept=".jpg, .png, .svg" name="image" id="image" placeholder="Upload File"/>
                                 </div>
                             </div>
                             <div className="form-group row mb-2">

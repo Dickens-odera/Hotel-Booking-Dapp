@@ -28,19 +28,21 @@ contract("Booking", function (accounts) {
 
   it('can add a hotel before adding a room', async() =>{
     const newHotel = {
-        id:hotelId,
-        name:"Crypto Hotel",
-        numOfRooms:10,
-        description:"Some dummy crypto hotel name",
-        location:"Kasarani, Nairobi - kenya",
-        date: new Date().getTime(),
-        hotelType:1
+      id:hotelId,
+      name:"Crypto Hotel",
+      numOfRooms:10,
+      description:"Some dummy crypto hotel name",
+      location:"Kasarani, Nairobi - kenya",
+      date: new Date().getTime(),
+      hotelType:1,
+      photo: "https://ipfs.infura.io/gshsgdhdbjhsh6474fh64746"
     };
     const result = await bookingInstance.addHotel(
       newHotel.numOfRooms,
       newHotel.name,
       newHotel.description,
       newHotel.location,
+      newHotel.photo,
       {from:alice, value:listingFeeToPay});
 
       const totalNumberOfHotels = await bookingInstance.totalHotels();

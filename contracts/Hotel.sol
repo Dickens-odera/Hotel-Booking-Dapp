@@ -7,6 +7,7 @@ import '@openzeppelin/contracts/utils/Counters.sol';
 import './HotelBookingInterface.sol';
 
   /**
+   * @title Hotel Booking 
    * @dev A simple Smart Contract for hotel management
    * @author Dickens Odera dickensodera9@gmail.com
   **/
@@ -33,6 +34,7 @@ contract Hotel is Ownable, HotelBookingInterface, ReentrancyGuard {
     string description;
     string locationAddress;
     address payable user;
+    string imageHash;
   }
 
   HotelItem[] public hotelItems; //hotels array of the Hotel struct above
@@ -87,7 +89,17 @@ contract Hotel is Ownable, HotelBookingInterface, ReentrancyGuard {
     emit HotelListingFeeChanged(msg.sender,block.timestamp, _fee);
   }
 
-  function addHotel(uint _numOfRooms, string memory _name,string memory _description, string memory _location) public hotelNameExists(_name) nonReentrant payable{
+  function setImageHash(uint hotelId, string memory imageHash) public{
+    require(existingHotelItemId[hotelId] == true,"Hotel Does Not Exist");
+    hotelItemId[hotelId].imageHash = imageHash;
+  }
+
+  function getImageHash(uint hotelId) public view returns(string memory _imageHash){
+    require(existingHotelItemId[hotelId] == true,"Hotel Does Not Exist");
+    return hotelItemId[hotelId].imageHash;
+  }
+
+  function addHotel(uint _numOfRooms, string memory _name,string memory _description, string memory _location, string memory _imageHash) public hotelNameExists(_name) nonReentrant payable{
     require(msg.sender != address(0));
     require(msg.value == hotelListingFee,"Invalid Listing Fee");
     require(_numOfRooms != 0,"Number of rooms cannot be zero");
@@ -95,7 +107,7 @@ contract Hotel is Ownable, HotelBookingInterface, ReentrancyGuard {
     require(bytes(_location).length > 0,"Please specify the location of the hotel");
     _hotelIds.increment();
     uint currentHotelId = _hotelIds.current();
-    hotelItemId[currentHotelId] = HotelItem(currentHotelId, _numOfRooms, block.timestamp, _name, DEFAULT_HOTEL_TYPE,_description, _location, payable(msg.sender));
+    hotelItemId[currentHotelId] = HotelItem(currentHotelId, _numOfRooms, block.timestamp, _name, DEFAULT_HOTEL_TYPE,_description, _location, payable(msg.sender), _imageHash);
     hotelItems.push(hotelItemId[currentHotelId]);
     hotelOwner[msg.sender] = hotelItemId[currentHotelId];
     totalHotels = totalHotels.add(1);
@@ -116,7 +128,8 @@ contract Hotel is Ownable, HotelBookingInterface, ReentrancyGuard {
       string memory _name,
       string memory _description,
       string memory _location,
-      HOTEL_CATEGORY _category
+      HOTEL_CATEGORY _category,
+      string memory _photo
       ){
     HotelItem storage hotelItem = hotelItemId[_hotelId];
     _id = hotelItem.id;
@@ -126,6 +139,7 @@ contract Hotel is Ownable, HotelBookingInterface, ReentrancyGuard {
     _description = hotelItem.description;
     _location = hotelItem.locationAddress;
     _category = hotelItem.hotelCategory;
+    _photo  = hotelItem.imageHash;
   }
 
   function changeHotelCategory(uint _hotelId, HOTEL_CATEGORY _category) public hotelExists(_hotelId) ownsHotel(_hotelId) {

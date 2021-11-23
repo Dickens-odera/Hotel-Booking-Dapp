@@ -28,13 +28,15 @@ contract("Hotel", async(accounts) => {
         description:"Some dummy crypto hotel name",
         location:"Kasarani, Nairobi - kenya",
         date: new Date().getTime(),
-        hotelType:1
+        hotelType:1,
+        photo:"https://ipfs.infura.io/5373hshsjssjjg637fffkk"
     };
     const result = await hotelInstance.addHotel(
       newHotel.numOfRooms,
       newHotel.name,
       newHotel.description,
       newHotel.location,
+      newHotel.photo,
       {from:alice, value:amount});
 
       const totalHotels = await hotelInstance.totalHotels();

@@ -3,7 +3,7 @@ import Navbar from './components/Navbar';
 import NewHotel from './components/NewHotel';
 import HotelList from './components/HotelList';
 import Web3 from 'web3';
-import HotelContract from '../src/abi/Hotel.json';
+import HotelContract from '../src/abi/Room.json';
 
 export default class App extends Component {
   constructor(props) {
@@ -15,22 +15,26 @@ export default class App extends Component {
       hotels: [],
       hotelListingFee:null,
       loading:true,
+      provider:null,
     }
   }
 
   async componentWillMount(){
     await this.loadWeb3();
     await this.loadBlockchain();
+    await this.fetchListingFee();
     await this.fetchHotels();
   }
 
   async loadWeb3(){
     if(window.ethereum){
       window.web3 = new Web3(window.ethereum);
+      this.setState({ provider: window.web3});
       await window.ethereum.enable();
     }
     else if(window.web3){
       window.web3 = new Web3(window.web3.currentProvider);
+      this.setState({ provider: window.web3 });
     }else{
       window.alert("Non-Ethereum browser detected, please consider installing MetaMask Extension for your browser");
     }
@@ -38,7 +42,6 @@ export default class App extends Component {
 
   async loadBlockchain(){
     let totalNumberOfHotels;
-    let listingFee;
     const web3 = await window.web3;
     const accounts = await web3.eth.getAccounts().then((accounts) => {
       this.setState({ account: accounts[0]});
@@ -50,20 +53,12 @@ export default class App extends Component {
       //set the contract ABI
       const hotelContract = await new web3.eth.Contract(HotelContract.abi, hotelContractData.address);
       this.setState({ hotelContractABI: hotelContract });
+      //console.log(hotelContract)
 
       //fetch total Number of hotels
       totalNumberOfHotels = await this.state.hotelContractABI.methods.totalHotels().call().then((total) => {
         console.log("Total Hotels: ", total);
         this.setState({ totalHotels: total });
-      }).catch((err) => {
-        console.log(err);
-      });
-
-      //fetch listing fee
-      listingFee = await this.state.hotelContractABI.methods.hotelListingFee().call().then((fee) => {
-        const feeAmount = web3.utils.fromWei(fee.toString(), "ether");
-        this.setState({ hotelListingFee: feeAmount });
-        console.log("Listing Fee: ", feeAmount);
       }).catch((err) => {
         console.error(err);
       });
@@ -84,8 +79,20 @@ export default class App extends Component {
       });
     }
     console.log("Hotels", ...this.state.hotels);
-
   }
+
+  async fetchListingFee(){
+    const web3 = this.state.provider;
+    let listingFee;
+    listingFee = await this.state.hotelContractABI.methods.hotelListingFee().call().then((fee) => {
+      const feeAmount = web3.utils.fromWei(fee.toString(), "ether");
+      this.setState({ hotelListingFee: feeAmount });
+      console.log("Listing Fee: ", feeAmount);
+    }).catch((err) => {
+      console.error(err);
+    });
+  }
+  
     render(){
       return (
           <React.Fragment>
@@ -93,6 +100,7 @@ export default class App extends Component {
           <NewHotel hotelContract={this.state.hotelContractABI}
             listingFee={this.state.hotelListingFee}
             account={this.state.account}
+            provider={this.state.provider}
             />
           <HotelList hotelContract={this.state.hotelContractABI} 
                      totalHotels={this.state.totalHotels}
