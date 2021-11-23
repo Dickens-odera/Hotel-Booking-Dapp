@@ -11,7 +11,9 @@ export default class  HotelList extends Component {
     }
 
     render(){
-        const hotels = this.props.hotels;
+        const hotels = this.props.hotels.sort(( a, b ) => {
+            return b.id - a.id;
+        });
         const totalHotels = this.props.totalHotels;
         const listingFee = this.props.listingFee;
         return (
@@ -20,8 +22,8 @@ export default class  HotelList extends Component {
                 <h6>Listing Fee: {listingFee} ETH</h6>
                 
                 <div className="row">
-                    { hotels.map((hotel, index) => 
-                        <div key={index} className="col-md-4 mr-2 mb-2">
+                    { hotels.map((hotel) => 
+                        <div key={hotel.id} className="col-md-4 mr-2 mb-2">
                             <div className="card">
                                 <div className="card-header">
                                     <div className="card-title">{ hotel.name }</div>

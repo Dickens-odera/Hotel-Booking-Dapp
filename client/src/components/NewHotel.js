@@ -24,11 +24,11 @@ export default class NewHotel extends Component {
         const file = event.target.files[0];
         const reader = await new window.FileReader();
         reader.readAsArrayBuffer(file);
-        reader.onloadend = () => {
+        reader.onloadend = async() => {
             this.setState({ imageBuffer: Buffer(reader.result) });
             console.log("Image Buffer: ", this.state.imageBuffer)
+            await this.fetchImageHash();
         }
-        await this.fetchImageHash();
     }
 
     async fetchImageHash(){
@@ -41,44 +41,36 @@ export default class NewHotel extends Component {
                 console.log("Ipfs Image Hash:", this.state.ipfsImageHash);
             }
         });
-        return this.state.ipfsImageHash;
-    }
-
-    async setImageHash(event){
-        const web3 = await this.props.provider;
     }
 
     async handleSubmit(event) {
         event.preventDefault();
-        //const imageHash = await this.fetchImageHash();
         const web3 = await this.props.provider;
         const fee = await this.props.listingFee;
         const account = await this.props.account;
         const hotelContract = await this.props.hotelContract;
+
         const hotel = {
             name: event.target.name.value,
             location: event.target.location.value,
             description:event.target.description.value,
             noOfRooms: event.target.num_of_rooms.value
         }
+        console.log("Hash:", this.state.ipfsImageHash);
         const tx = await hotelContract.methods.addHotel(
-            hotel.noOfRooms,
-            hotel.name,
-            hotel.description,
-            hotel.location,
-            this.props.ipfsImageHash
+            hotel.noOfRooms, 
+            hotel.name, 
+            hotel.description, 
+            hotel.location, 
+            this.state.ipfsImageHash
             ).send({
                 from: account,
                 value: await web3.utils.toWei(fee.toString(),"ether"),
                 gas: 6721975,
         }).then(( result) =>{
-            console.log("Image Hash after file uplaod",this.state.ipfsImageHash);
-            //console.log(tx);
+            console.log("Image Hash after file upload",this.state.ipfsImageHash);
             console.log(result);
-            const hotelItem = this.hotelContract.methods.hotelItemId(result.logs[0].args.id);
-            console.log("Hotel Item",hotelItem);
-            //const hotelItem = await hotelContract.methods.setImageHash()
-            //window.location.reload();
+            window.location.reload();
         }).catch(( err) => {
             console.error(err);
         });
