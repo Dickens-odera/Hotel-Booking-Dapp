@@ -43,7 +43,7 @@ export default class  HotelList extends Component {
                 )}
                 </div>
 
-            </div>
+            </div>  
         );
     }
 }

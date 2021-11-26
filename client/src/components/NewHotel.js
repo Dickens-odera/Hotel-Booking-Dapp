@@ -119,10 +119,10 @@ export default class NewHotel extends Component {
                             </div>
                             <div className="form-group row mb-2">
                                 <div className="col-sm-6">
-                                    <button type="submit" className="btn btn-primary">Add Hotel</button>
+                                    <button type="submit" className="btn btn-primary">List Hotel</button>
                                 </div>
                                 <div className="col-sm-6">
-                                    <button onClick={this.clearForm} className="btn btn-primary">Clear Form</button>
+                                    <button onClick={this.clearForm} className="btn btn-warning">Clear Form</button>
                                 </div>
                             </div>
                         </form>
