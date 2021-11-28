@@ -26,7 +26,7 @@ export default class NewHotel extends Component {
         reader.readAsArrayBuffer(file);
         reader.onloadend = async() => {
             this.setState({ imageBuffer: Buffer(reader.result) });
-            console.log("Image Buffer: ", this.state.imageBuffer)
+            console.log("Image Buffer: ", this.state.imageBuffer);
             await this.fetchImageHash();
         }
     }

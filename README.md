@@ -5,6 +5,6 @@
 <p>User can be a ble to list hotels and book rooms from wherver they are:</p>
 
 
-![List Hotel Form](screenshots/dapp1.png)
-![Hotel Items](screenshots/dapp2.png)
-![Hotel Items](screenshots/dapp3.png)
+![List Hotel Form](https://github.com/Dickens-odera/Hotel-Booking-Dapp/tree/master/screenshots/dapp1.PNG)
+![Hotel Items](https://github.com/Dickens-odera/Hotel-Booking-Dapp/tree/master/screenshots/dapp2.PNG)
+![Hotel Items](https://github.com/Dickens-odera/Hotel-Booking-Dapp/tree/master/screenshots/dapp3.PNG)
