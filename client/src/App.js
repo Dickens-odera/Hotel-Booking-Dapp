@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import Navbar from './components/Navbar';
 import NewHotel from './components/NewHotel';
 import HotelList from './components/HotelList';
+import NewRoom from './components/NewRoom';
 import Web3 from 'web3';
 import HotelContract from '../src/abi/Room.json';
 import { BrowserRouter, Route, Routes, Link } from 'react-router-dom';

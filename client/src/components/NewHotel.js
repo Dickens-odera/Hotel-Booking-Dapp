@@ -66,7 +66,8 @@ export default class NewHotel extends Component {
             ).send({
                 from: account,
                 value: await web3.utils.toWei(fee.toString(),"ether"),
-                gas: 6721975
+                gas: 6721975,
+                gasLimit: 3000000
         }).then(( result) =>{
             console.log("Image Hash after file upload",this.state.ipfsImageHash);
             console.log(result);
@@ -132,7 +133,10 @@ export default class NewHotel extends Component {
                             </div>
                         </div>
                     </div>
-                    <NewRoom />
+                    <NewRoom 
+                    hotelContract={this.props.hotelContract}
+                    account={this.props.account}
+                    />
                 </div>
             </div>
         );

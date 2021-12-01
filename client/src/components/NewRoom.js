@@ -4,15 +4,43 @@ export default class NewRoom extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            hotel:null
+            hotel:null,
         }
-
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
+    async componentWillMount() {
+
+    }
     async handleSubmit(event) {
         event.preventDefault();
+        const web3 = await window.web3;
+        const roomItem = {
+            name: event.target.name.value,
+            hotelId: event.target.hotel_id.value,
+            totalBeds: event.target.total_beds.value,
+            pricePerNight: await web3.utils.toWei(event.target.price_per_night.value.toString(),'ether'),
+            number: event.target.room_number.value,
+            description: event.target.description.value
+        }
+
+        await this.props.hotelContract.methods.addRoom(
+            roomItem.hotelId,
+            roomItem.totalBeds,
+            roomItem.pricePerNight,
+            roomItem.number,
+            roomItem.name,
+            roomItem.description
+        ).send({
+            from: this.props.account,
+            gas: 6721975,
+            gasLimit: 3000000
+        }).then(( result )=> {
+            console.log(result);
+            window.alert("Room Added Successfully");
+        }).catch(( error )=> { console.error( error)})
     }
+
     render(){
         return(
             <div className="col-md-6">
@@ -23,7 +51,7 @@ export default class NewRoom extends Component {
                             <div className="form-group row mb-2">
                                 <label for="name" className="col-sm-6 col-form-label">Name: </label>
                                 <div className="col-sm-6">
-                                    <input type="number" className="form-control" name="name" id="name" placeholder="Hotel Name"></input>
+                                    <input type="text" className="form-control" name="name" id="name" placeholder="Hotel Name"></input>
                                 </div>
                             </div>
                             <div className="form-group row mb-2">
