@@ -12,6 +12,7 @@ export default class NewRoom extends Component {
     async componentWillMount() {
 
     }
+    
     async handleSubmit(event) {
         event.preventDefault();
         const web3 = await window.web3;

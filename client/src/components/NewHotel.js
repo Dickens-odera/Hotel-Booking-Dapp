@@ -54,11 +54,9 @@ export default class NewHotel extends Component {
             name: event.target.name.value,
             location: event.target.location.value,
             description:event.target.description.value,
-            noOfRooms: event.target.num_of_rooms.value
         }
         console.log("Hash:", this.state.ipfsImageHash);
         const tx = await hotelContract.methods.addHotel(
-            hotel.noOfRooms, 
             hotel.name, 
             hotel.description, 
             hotel.location, 
@@ -101,12 +99,6 @@ export default class NewHotel extends Component {
                                         <label for="location" className="col-sm-6 col-form-label">Location: </label>
                                         <div className="col-sm-6">
                                             <input type="text" className="form-control" name="location" id="location" placeholder="Hotel Location"></input>
-                                        </div>
-                                    </div>
-                                    <div className="form-group row mb-2">
-                                        <label for="num_of_rooms" className="col-sm-6 col-form-label">No of Rooms:</label>
-                                        <div className="col-md-6">
-                                            <input type="number" className="form-control" name="num_of_rooms" id="num_of_rooms" placeholder="Total No Of Rooms"></input>
                                         </div>
                                     </div>
                                     <div className="form-group row mb-2">

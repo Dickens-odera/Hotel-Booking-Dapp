@@ -48,7 +48,7 @@ export default class  HotelList extends Component {
             for (let i = 0; i < data.length; i++) {
                 if (data[i].hotelId === this.state.currentHotelId) {
                     this.state.hotel.rooms.push(data[i]);
-                    console.log("Rooms Found:", data[i]);
+                    console.log("Rooms Found:", this.state.hotel.rooms);
                 } else {
                     console.log("This hotel has no rooms");
                 }

@@ -73,9 +73,11 @@ contract Room is Hotel{
         _roomIds.increment();
         uint currentRoomId = _roomIds.current();
         uint hotelId = hotelItemId[_hotelId].id;
+        uint hotelItemTotalRooms = hotelItemId[_hotelId].totalRooms;
         roomItemId[currentRoomId]  = RoomItem(currentRoomId,_totalBeds,hotelId,_pricePerNight, _number, false, payable(msg.sender),_name,_description);
         rooms.push(roomItemId[currentRoomId]);
         roomOwner[msg.sender] = roomItemId[currentRoomId];
+        hotelItemTotalRooms = hotelItemTotalRooms.add(1);
         totalRooms = totalRooms.add(1);
         existingRoomItem[currentRoomId] = true;
         existingRoomItemName[_name] = true;

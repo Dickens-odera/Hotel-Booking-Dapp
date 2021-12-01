@@ -99,15 +99,14 @@ contract Hotel is Ownable, HotelBookingInterface, ReentrancyGuard {
     return hotelItemId[hotelId].imageHash;
   }
 
-  function addHotel(uint _numOfRooms, string memory _name,string memory _description, string memory _location, string memory _imageHash) public hotelNameExists(_name) nonReentrant payable{
+  function addHotel(string memory _name,string memory _description, string memory _location, string memory _imageHash) public hotelNameExists(_name) nonReentrant payable{
     require(msg.sender != address(0));
     require(msg.value == hotelListingFee,"Invalid Listing Fee");
-    require(_numOfRooms != 0,"Number of rooms cannot be zero");
     require(bytes(_description).length > 0,"Please specify the hotel description");
     require(bytes(_location).length > 0,"Please specify the location of the hotel");
     _hotelIds.increment();
     uint currentHotelId = _hotelIds.current();
-    hotelItemId[currentHotelId] = HotelItem(currentHotelId, _numOfRooms, block.timestamp, _name, DEFAULT_HOTEL_TYPE,_description, _location, payable(msg.sender), _imageHash);
+    hotelItemId[currentHotelId] = HotelItem(currentHotelId,0, block.timestamp, _name, DEFAULT_HOTEL_TYPE,_description, _location, payable(msg.sender), _imageHash);
     hotelItems.push(hotelItemId[currentHotelId]);
     hotelOwner[msg.sender] = hotelItemId[currentHotelId];
     totalHotels = totalHotels.add(1);
