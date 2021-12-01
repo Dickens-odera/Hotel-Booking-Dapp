@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { BrowserRouter, Route, Routes, Link } from 'react-router-dom';
 
 export default class Navbar extends Component{
     constructor(props) {
@@ -20,6 +21,7 @@ export default class Navbar extends Component{
 
                         <div className="collapse navbar-collapse" id="navbarTogglerDemo02">
                             <ul className="navbar-nav mr-auto mt-2 mt-lg-0">
+                                {/* <Link to="/">Home</Link> */}
                                 <li className="nav-item active">
                                     <a className="nav-link" href="#">Home</a>
                                 </li>

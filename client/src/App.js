@@ -4,6 +4,7 @@ import NewHotel from './components/NewHotel';
 import HotelList from './components/HotelList';
 import Web3 from 'web3';
 import HotelContract from '../src/abi/Room.json';
+import { BrowserRouter, Route, Routes, Link } from 'react-router-dom';
 
 export default class App extends Component {
   constructor(props) {
@@ -96,6 +97,11 @@ export default class App extends Component {
     render(){
       return (
           <React.Fragment>
+            {/* <BrowserRouter >
+            <Routes >
+              <Route path="/" element={<HotelList /> }></Route>
+            </Routes>
+            </BrowserRouter> */}
           <Navbar account={this.state.account}/>
           <NewHotel hotelContract={this.state.hotelContractABI}
             listingFee={this.state.hotelListingFee}
@@ -106,6 +112,7 @@ export default class App extends Component {
                      totalHotels={this.state.totalHotels}
                      listingFee={this.state.hotelListingFee}
                      hotels={this.state.hotels}
+                      account={this.state.account}
                      />
           </React.Fragment>
       );

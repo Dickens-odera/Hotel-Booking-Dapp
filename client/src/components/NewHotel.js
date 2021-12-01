@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Web3 from 'web3';
 import ipfs from '../ipfs';
+import NewRoom from './NewRoom';
 
 export default class NewHotel extends Component {
     constructor(props) {
@@ -16,7 +17,6 @@ export default class NewHotel extends Component {
     }
 
     async componentWillMount() {
-
     }
 
     async capturePhoto(event){
@@ -84,50 +84,55 @@ export default class NewHotel extends Component {
         return(
             <div className="container mb-2">
                 <div className="row">
-                    <div className="col-md-3"></div>
+                    {/* <div className="col-md-3"></div> */}
                     <div className="col-md-6">
-                        <form onSubmit={this.handleSubmit}>
-                            <div className="form-group row mb-2">
-                                <label for="name" className="col-sm-6 col-form-label">Name: </label>
-                                <div className="col-sm-6">
-                                    <input type="text" className="form-control" name="name" id="name" placeholder="Hotel Name"></input>
-                                </div>
+                        <div className="card">
+                            <div className="card-header"><div className="card-title">List New Hotel</div></div>
+                            <div className="card-body">
+                                <form onSubmit={this.handleSubmit}>
+                                    <div className="form-group row mb-2">
+                                        <label for="name" className="col-sm-6 col-form-label">Name: </label>
+                                        <div className="col-sm-6">
+                                            <input type="text" className="form-control" name="name" id="name" placeholder="Hotel Name"></input>
+                                        </div>
+                                    </div>
+                                    <div className="form-group row mb-2">
+                                        <label for="location" className="col-sm-6 col-form-label">Location: </label>
+                                        <div className="col-sm-6">
+                                            <input type="text" className="form-control" name="location" id="location" placeholder="Hotel Location"></input>
+                                        </div>
+                                    </div>
+                                    <div className="form-group row mb-2">
+                                        <label for="num_of_rooms" className="col-sm-6 col-form-label">No of Rooms:</label>
+                                        <div className="col-md-6">
+                                            <input type="number" className="form-control" name="num_of_rooms" id="num_of_rooms" placeholder="Total No Of Rooms"></input>
+                                        </div>
+                                    </div>
+                                    <div className="form-group row mb-2">
+                                        <label for="description" className="col-sm-6 col-form-label">Description: </label>
+                                        <div className="col-sm-6">
+                                            <textarea className="form-control" id="description" name="description" placeholder="Hotel Description"></textarea>
+                                        </div>
+                                    </div>
+                                    <div className="form-group row mb-2">
+                                        <label for="file" className="col-sm-6 col-form-label">Photo</label>
+                                        <div className="col-sm-6">
+                                            <input type="file" onChange={this.capturePhoto} accept=".jpg, .png, .svg" name="image" id="image" placeholder="Upload File" />
+                                        </div>
+                                    </div>
+                                    <div className="form-group row mb-2">
+                                        <div className="col-sm-6">
+                                            <button type="submit" className="btn btn-primary">List Hotel</button>
+                                        </div>
+                                        <div className="col-sm-6">
+                                            <button onClick={this.clearForm} className="btn btn-warning">Clear Form</button>
+                                        </div>
+                                    </div>
+                                </form>
                             </div>
-                            <div className="form-group row mb-2">
-                                <label for="location" className="col-sm-6 col-form-label">Location: </label>
-                                <div className="col-sm-6">
-                                    <input type="text" className="form-control" name="location" id="location" placeholder="Hotel Location"></input>
-                                </div>
-                            </div>
-                            <div className="form-group row mb-2">
-                                <label for="num_of_rooms" className="col-sm-6 col-form-label">No of Rooms:</label>
-                                <div className="col-md-6">
-                                    <input type="number" className="form-control" name="num_of_rooms" id="num_of_rooms" placeholder="Total No Of Rooms"></input>
-                                </div>
-                            </div>
-                            <div className="form-group row mb-2">
-                                <label for="description" className="col-sm-6 col-form-label">Description: </label>
-                                <div className="col-sm-6">
-                                    <textarea className="form-control" id="description" name ="description" placeholder="Hotel Description"></textarea>
-                                </div>
-                            </div>
-                            <div className="form-group row mb-2">
-                                <label for="file" className="col-sm-6 col-form-label">Photo</label>
-                                <div className="col-sm-6">
-                                    <input type="file" onChange={this.capturePhoto} accept=".jpg, .png, .svg" name="image" id="image" placeholder="Upload File"/>
-                                </div>
-                            </div>
-                            <div className="form-group row mb-2">
-                                <div className="col-sm-6">
-                                    <button type="submit" className="btn btn-primary">List Hotel</button>
-                                </div>
-                                <div className="col-sm-6">
-                                    <button onClick={this.clearForm} className="btn btn-warning">Clear Form</button>
-                                </div>
-                            </div>
-                        </form>
+                        </div>
                     </div>
-                    <div className="col-md-3"></div>
+                    <NewRoom />
                 </div>
             </div>
         );

@@ -1,13 +1,61 @@
 import React,{ Component, useState } from 'react';
 import Web3 from 'web3';
 import HotelItem from './HotelItem';
+import { BrowserRouter, Route, Routes, Link } from 'react-router-dom';
 
 export default class  HotelList extends Component {
     constructor(props){
         super(props);
         this.state = {
             isLoading:true,
+            currentHotelId:null,
+            hotel:{}
         }
+        this.fetchRooms = this.fetchRooms.bind(this);
+        this.fetchHotelBioData = this.fetchHotelBioData.bind(this);
+
+    }
+
+    async fetchHotelBioData(event){
+        event.preventDefault();
+        await this.setState({ currentHotelId: event.target.id });
+        console.log("Current clicked id", this.state.currentHotelId)
+        await this.props.hotelContract.methods.getHotelBioData(this.state.currentHotelId).call().then((result) => {
+            //importconsole.log("Hotel Image Hash", result._photo);
+            if(result){
+                const hotel = {
+                    id: result._id,
+                    name: result._name,
+                    totalRooms: result._totalRooms,
+                    dateOfCreation: result._date,
+                    category: result._category,
+                    location: result._location,
+                    imageHash: result._photo,
+                    description: result._description,
+                    rooms: []
+                }
+                this.setState({ hotel: hotel });
+                this.fetchRooms();
+                console.log("Hotel Name", hotel.name);
+            }
+        }).catch((error) => {
+            console.error(error);
+        });
+    }
+
+    async fetchRooms() {
+        await this.props.hotelContract.methods.listRooms().call().then((data) => {
+            for (let i = 0; i < data.length; i++) {
+                if (data[i].hotelId === this.state.currentHotelId) {
+                    this.state.hotel.rooms.push(data[i]);
+                    console.log("Rooms Found:", data[i]);
+                } else {
+                    console.log("This hotel has no rooms");
+                }
+            }
+        }).catch((error) => {
+            console.error(error);
+        });
     }
 
     render(){
@@ -36,7 +84,19 @@ export default class  HotelList extends Component {
                                     <p>Published By: {hotel.user}</p>
                                     <p>Hotel Type: {hotel.hotelCategory == 0 ? "Chain Hotel":""}</p>
                                     <p>Image Hash: {hotel.imageHash}</p>
-                                    <button className="btn btn-success"> View Rooms </button>
+                                    {/* <Link to="/" element={<HotelItem/>}>Rooms</Link> */}
+                                    <div className="row">
+                                        <div className="col-md-6">
+                                            <button className="btn btn-success btt-sm" onClick={this.fetchHotelBioData} id={hotel.id}> View </button>
+                                        </div>
+                                        <div className="col-md-6">
+                                            {this.props.account === hotel.user ? 
+                                                <button  type="button" className="btn btn-warning btn-sm" data-toggle="modal" data-target="#exampleModal"> Add Rooms </button>
+                                                    :
+                                                <button className="btn btn-warning btn-sm"> View Rooms </button>
+                                            }
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
