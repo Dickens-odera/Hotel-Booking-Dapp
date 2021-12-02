@@ -34,8 +34,8 @@ export default class NewRoom extends Component {
             roomItem.description
         ).send({
             from: this.props.account,
-            gas: 6721975,
-            gasLimit: 3000000
+            gas: 1500000,
+            gasPrice: '30000000000'
         }).then(( result )=> {
             console.log(result);
             window.alert("Room Added Successfully");
