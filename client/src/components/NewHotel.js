@@ -69,6 +69,7 @@ export default class NewHotel extends Component {
         }).then(( result) =>{
             console.log("Image Hash after file upload",this.state.ipfsImageHash);
             console.log(result);
+            window.alert("Hotel Added Successfully");
             window.location.reload();
         }).catch(( err) => {
             console.error(err);
@@ -83,7 +84,6 @@ export default class NewHotel extends Component {
         return(
             <div className="container mb-2">
                 <div className="row">
-                    {/* <div className="col-md-3"></div> */}
                     <div className="col-md-6">
                         <div className="card">
                             <div className="card-header"><div className="card-title">List New Hotel</div></div>

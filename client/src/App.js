@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import Navbar from './components/Navbar';
 import NewHotel from './components/NewHotel';
 import HotelList from './components/HotelList';
-import NewRoom from './components/NewRoom';
+import RoomList from './components/RoomList';
 import Web3 from 'web3';
 import HotelContract from '../src/abi/Room.json';
 import { BrowserRouter, Route, Routes, Link } from 'react-router-dom';
@@ -14,7 +14,9 @@ export default class App extends Component {
       account: "",
       hotelContractABI:null,
       totalHotels: null,
+      totalRooms:null,
       hotels: [],
+      rooms:[],
       hotelListingFee:null,
       loading:true,
       provider:null,
@@ -26,6 +28,7 @@ export default class App extends Component {
     await this.loadBlockchain();
     await this.fetchListingFee();
     await this.fetchHotels();
+    await this.fetchRooms();
   }
 
   async loadWeb3(){
@@ -44,6 +47,7 @@ export default class App extends Component {
 
   async loadBlockchain(){
     let totalNumberOfHotels;
+    let totalNumberOfRooms;
     const web3 = await window.web3;
     const accounts = await web3.eth.getAccounts().then((accounts) => {
       this.setState({ account: accounts[0]});
@@ -59,11 +63,15 @@ export default class App extends Component {
 
       //fetch total Number of hotels
       totalNumberOfHotels = await this.state.hotelContractABI.methods.totalHotels().call().then((total) => {
-        console.log("Total Hotels: ", total);
         this.setState({ totalHotels: total });
       }).catch((err) => {
         console.error(err);
       });
+
+      totalNumberOfRooms = await this.state.hotelContractABI.methods.totalRooms().call().then(( total ) => {
+        console.log("Total Rooms: ", total);
+        this.setState({ totalRooms: total });
+      }).catch((error) => console.error(error));
     }else{
       window.alert("Failed to fetch hotel contract");
     }
@@ -83,6 +91,20 @@ export default class App extends Component {
     console.log("Hotels", ...this.state.hotels);
   }
 
+  async fetchRooms() {
+    for(let i = 0; i <= this.state.totalRooms; i++){
+      await this.state.hotelContractABI.methods.rooms(i).call()
+        .then((data) => {
+          this.setState({
+            rooms: [...this.state.rooms, data]
+          });
+        }).catch((error) => {
+          console.error(error);
+        });
+    }
+    console.log("Rooms Fetched: ", this.state.rooms);
+  }
+
   async fetchListingFee(){
     const web3 = this.state.provider;
     let listingFee;
@@ -98,12 +120,8 @@ export default class App extends Component {
     render(){
       return (
           <React.Fragment>
-            {/* <BrowserRouter >
-            <Routes >
-              <Route path="/" element={<HotelList /> }></Route>
-            </Routes>
-            </BrowserRouter> */}
           <Navbar account={this.state.account}/>
+          <RoomList rooms={this.state.rooms}/>
           <NewHotel hotelContract={this.state.hotelContractABI}
             listingFee={this.state.hotelListingFee}
             account={this.state.account}

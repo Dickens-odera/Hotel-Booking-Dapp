@@ -21,7 +21,6 @@ export default class  HotelList extends Component {
         await this.setState({ currentHotelId: event.target.id });
         console.log("Current clicked id", this.state.currentHotelId)
         await this.props.hotelContract.methods.getHotelBioData(this.state.currentHotelId).call().then((result) => {
-            //importconsole.log("Hotel Image Hash", result._photo);
             if(result){
                 const hotel = {
                     id: result._id,
@@ -84,7 +83,6 @@ export default class  HotelList extends Component {
                                     <p>Published By: {hotel.user}</p>
                                     <p>Hotel Type: {hotel.hotelCategory == 0 ? "Chain Hotel":""}</p>
                                     <p>Image Hash: {hotel.imageHash}</p>
-                                    {/* <Link to="/" element={<HotelItem/>}>Rooms</Link> */}
                                     <div className="row">
                                         <div className="col-md-6">
                                             <button className="btn btn-success btt-sm" onClick={this.fetchHotelBioData} id={hotel.id}> View </button>

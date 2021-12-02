@@ -39,6 +39,7 @@ export default class NewRoom extends Component {
         }).then(( result )=> {
             console.log(result);
             window.alert("Room Added Successfully");
+            window.location.reload();
         }).catch(( error )=> { console.error( error)})
     }
 
