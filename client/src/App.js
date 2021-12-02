@@ -20,6 +20,7 @@ export default class App extends Component {
       hotelListingFee:null,
       loading:true,
       provider:null,
+      networkId:null
     }
   }
 
@@ -52,9 +53,17 @@ export default class App extends Component {
     const accounts = await web3.eth.getAccounts().then((accounts) => {
       this.setState({ account: accounts[0]});
     });
-
+    //detect change in Metamask Account
+    window.ethereum.on('accountsChanged', async(accounts) => {
+        this.setState({ account: accounts[0]});
+    });
     const netWorkID = await web3.eth.net.getId();
-    const hotelContractData = HotelContract.networks[netWorkID];
+    this.setState({ networkId: netWorkID});
+    //Detect change in network
+    window.ethereum.on('networkChanged', async (netId) => {
+      this.setState({ networkId: netId });
+    });
+    const hotelContractData = HotelContract.networks[this.state.networkId];
     if (hotelContractData){
       //set the contract ABI
       const hotelContract = await new web3.eth.Contract(HotelContract.abi, hotelContractData.address);
