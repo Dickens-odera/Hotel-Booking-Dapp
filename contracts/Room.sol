@@ -61,8 +61,8 @@ contract Room is Hotel{
     }
 
     function addRoom(uint _hotelId, uint _totalBeds, uint _pricePerNight, uint _number,string memory _name, string memory _description) public
-    ownsHotel(_hotelId)
     hotelExists(_hotelId)
+    ownsHotel(_hotelId)
     roomNameDoesNotExist(_name)
     {
         require(msg.sender != address(0));
