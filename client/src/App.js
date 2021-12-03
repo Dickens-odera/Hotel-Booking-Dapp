@@ -28,8 +28,8 @@ export default class App extends Component {
     await this.loadWeb3();
     await this.loadBlockchain();
     await this.fetchListingFee();
-    await this.fetchHotels();
     await this.fetchRooms();
+    await this.fetchHotels();
   }
 
   async loadWeb3(){
@@ -130,7 +130,10 @@ export default class App extends Component {
       return (
           <React.Fragment>
           <Navbar account={this.state.account}/>
-          <RoomList rooms={this.state.rooms}/>
+          <RoomList rooms={this.state.rooms} 
+                    hotelContract={this.state.hotelContractABI}
+                    account={this.state.account}
+          />
           <NewHotel hotelContract={this.state.hotelContractABI}
             listingFee={this.state.hotelListingFee}
             account={this.state.account}
