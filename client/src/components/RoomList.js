@@ -18,7 +18,6 @@ export default class RoomList extends Component{
         event.preventDefault();
         const web3 = window.web3;
         let amount;
-        let roomNightPrice;
         const bookingDetails = {
             id: this.state.roomId,
             numOfNights: event.target.num_of_nights.value
@@ -26,20 +25,20 @@ export default class RoomList extends Component{
         console.log("Selected Number Of Nights",bookingDetails.numOfNights);
         //fetch room
         const selectedRoomItem = await this.props.hotelContract.methods.roomItemId(this.state.roomId).call()
-        .then(( room ) => {
-            roomNightPrice = web3.utils.fromWei(room.pricePerNight.toString(),"ether");
-            amount = roomNightPrice * bookingDetails.numOfNights;
+        .then(async( room ) => {
             console.log("room", room);
-            console.log("Amount", amount);
+            amount = await room.pricePerNight * bookingDetails.numOfNights.toString();
+            console.log("Calculated Price", amount);
         }).catch((error) => {
             console.error(error);
         });
+        //perform booking
         const result = await this.props.hotelContract.methods.bookRoom(
             bookingDetails.id,
             bookingDetails.numOfNights
         ).send({
             from: this.props.account,
-            value: web3.utils.toWei(amount.toString(),'ether'),
+            value: amount,
             gas: 1500000,
             gasPrice: '30000000000'
         }).then(( result ) => {
@@ -79,13 +78,13 @@ export default class RoomList extends Component{
                                     <table className="table table-sm table-hover table-bordered table-dark">
                                                 <thead className="thead-dark">
                                                     <tr>
-                                                        <th>Id:</th>
-                                                        <th>Hotel Id:</th>
-                                                        <th>Name:</th>
-                                                        <th>Total Beds:</th>
-                                                        <th>Price Per Night:</th>
-                                                        <th>Room Number:</th>
-                                                        <th>Description:</th>
+                                                        <th>Id</th>
+                                                        <th>Hotel Id</th>
+                                                        <th>Name</th>
+                                                        <th>Total Beds</th>
+                                                        <th>Price Per Night</th>
+                                                        <th>Room Number</th>
+                                                        <th>Description</th>
                                                         <th>Action</th>
                                                     </tr>
                                                 </thead>
@@ -100,11 +99,13 @@ export default class RoomList extends Component{
                                                             <td>{room.number}</td>
                                                             <td>{room.description}</td>
                                                             <td>
-                                                                {room.isBooked === false && room.user !== this.props.account?
+                                                                {room.isBooked === false &&
                                                             <Button variant="primary" onClick={this.showModal} id={room.id} className="btn btn-sm btn-primary" >Book Room</Button>
-                                                                    :
+                                                                    
+                                                                }
+                                                                { room.isBooked === true &&
+                                                            <Button variant="danger" className="btn btn-sm btn-primary" disabled>Booked</Button>
 
-                                                                    <Button variant="danger" className="btn btn-sm btn-primary" disabled>Booked</Button>
                                                                 }
                                                             </td>
                                                         </tr>

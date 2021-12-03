@@ -47,7 +47,7 @@ contract Booking is Room{
     require(msg.sender != room.user,"You cannot book your own room");
     require(msg.sender.balance >= totalPayableAmount,"Insufficient Funds");
     require(_numOfNights != 0,"Number of nights cannot be zero");
-    require(msg.value == totalPayableAmount * 1 ether,"Please pay the booking fee based on number of nights to be spent");
+    require(msg.value == totalPayableAmount,"Please pay the booking fee based on number of nights to be spent");
     _bookingIds.increment();
     uint currentBookingId = _bookingIds.current();
     room.user.transfer(msg.value);

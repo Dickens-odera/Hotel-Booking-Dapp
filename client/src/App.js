@@ -22,6 +22,12 @@ export default class App extends Component {
       provider:null,
       networkId:null
     }
+
+    this.loadWeb3 = this.loadWeb3.bind(this);
+    this.loadBlockchain = this.loadBlockchain.bind(this);
+    this.fetchListingFee = this.fetchListingFee.bind(this);
+    this.fetchRooms = this.fetchRooms.bind(this);
+    this.fetchHotels = this.fetchHotels.bind(this);
   }
 
   async componentWillMount(){
@@ -49,7 +55,7 @@ export default class App extends Component {
   async loadBlockchain(){
     let totalNumberOfHotels;
     let totalNumberOfRooms;
-    const web3 = await window.web3;
+    const web3 = await this.state.provider;
     const accounts = await web3.eth.getAccounts().then((accounts) => {
       this.setState({ account: accounts[0]});
     });
@@ -117,7 +123,7 @@ export default class App extends Component {
   async fetchListingFee(){
     const web3 = this.state.provider;
     let listingFee;
-    listingFee = await this.state.hotelContractABI.methods.hotelListingFee().call().then((fee) => {
+    await this.state.hotelContractABI.methods.hotelListingFee().call().then((fee) => {
       const feeAmount = web3.utils.fromWei(fee.toString(), "ether");
       this.setState({ hotelListingFee: feeAmount });
       console.log("Listing Fee: ", feeAmount);
@@ -125,12 +131,12 @@ export default class App extends Component {
       console.error(err);
     });
   }
-  
+
     render(){
       return (
           <React.Fragment>
           <Navbar account={this.state.account}/>
-          <RoomList rooms={this.state.rooms} 
+          <RoomList rooms={this.state.rooms}
                     hotelContract={this.state.hotelContractABI}
                     account={this.state.account}
           />
@@ -139,7 +145,7 @@ export default class App extends Component {
             account={this.state.account}
             provider={this.state.provider}
             />
-          <HotelList hotelContract={this.state.hotelContractABI} 
+          <HotelList hotelContract={this.state.hotelContractABI}
                      totalHotels={this.state.totalHotels}
                      listingFee={this.state.hotelListingFee}
                      hotels={this.state.hotels}
