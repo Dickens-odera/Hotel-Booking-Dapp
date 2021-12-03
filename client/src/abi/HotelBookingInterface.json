@@ -40,7 +40,7 @@
       "type": "function"
     }
   ],
-  "metadata": "{\"compiler\":{\"version\":\"0.8.10+commit.fc410830\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_index\",\"type\":\"uint256\"}],\"name\":\"getId\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_index\",\"type\":\"uint256\"}],\"name\":\"getName\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"/D/Dickens/Programming/Blockchain/Projects/Personal/HotelDapp/contracts/HotelBookingInterface.sol\":\"HotelBookingInterface\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"/D/Dickens/Programming/Blockchain/Projects/Personal/HotelDapp/contracts/HotelBookingInterface.sol\":{\"keccak256\":\"0x8096306b62dd844ce0f502eeb0d93a4c160117ed1cc9a2521d48aa84fd4c0168\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://a526c00a3db3bfe2fac07f77aa829415f193f6f519058560c1f03b903b87661a\",\"dweb:/ipfs/QmUfm6c87jy5H8Ho7TTbJqSi6DefXCeLLAKWBDz39GUAwH\"]}},\"version\":1}",
+  "metadata": "{\"compiler\":{\"version\":\"0.8.10+commit.fc410830\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_index\",\"type\":\"uint256\"}],\"name\":\"getId\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_index\",\"type\":\"uint256\"}],\"name\":\"getName\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"/D/Dickens/Programming/Blockchain/Projects/Personal/HotelDapp/contracts/HotelBookingInterface.sol\":\"HotelBookingInterface\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"/D/Dickens/Programming/Blockchain/Projects/Personal/HotelDapp/contracts/HotelBookingInterface.sol\":{\"keccak256\":\"0x8096306b62dd844ce0f502eeb0d93a4c160117ed1cc9a2521d48aa84fd4c0168\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://a526c00a3db3bfe2fac07f77aa829415f193f6f519058560c1f03b903b87661a\",\"dweb:/ipfs/QmUfm6c87jy5H8Ho7TTbJqSi6DefXCeLLAKWBDz39GUAwH\"]}},\"version\":1}",
   "bytecode": "0x",
   "deployedBytecode": "0x",
   "immutableReferences": {},
@@ -478,7 +478,7 @@
   },
   "networks": {},
   "schemaVersion": "3.4.1",
-  "updatedAt": "2021-12-01T21:19:16.019Z",
+  "updatedAt": "2021-12-03T04:24:37.804Z",
   "devdoc": {
     "kind": "dev",
     "methods": {},

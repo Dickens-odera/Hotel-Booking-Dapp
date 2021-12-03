@@ -4,7 +4,7 @@ import NewHotel from './components/NewHotel';
 import HotelList from './components/HotelList';
 import RoomList from './components/RoomList';
 import Web3 from 'web3';
-import HotelContract from '../src/abi/Room.json';
+import HotelContract from '../src/abi/Booking.json';
 import { BrowserRouter, Route, Routes, Link } from 'react-router-dom';
 
 export default class App extends Component {

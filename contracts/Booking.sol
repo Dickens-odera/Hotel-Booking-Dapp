@@ -38,7 +38,10 @@ contract Booking is Room{
     emit RoomBooked(block.timestamp, msg.sender,msg.value,_roomId);
   }
   
-  function bookRoom(uint _roomId,uint _numOfNights) public payable nonReentrant roomExists(_roomId) isNotBooked(_roomId){
+  function bookRoom(uint _roomId,uint _numOfNights) public payable 
+  nonReentrant 
+  roomExists(_roomId) 
+  isNotBooked(_roomId){
     RoomItem storage room = roomItemId[_roomId];
     uint totalPayableAmount = _numOfNights.mul(room.pricePerNight);
     require(msg.sender != room.user,"You cannot book your own room");
