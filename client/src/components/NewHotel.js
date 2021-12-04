@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Button, Modal } from 'react-bootstrap';
 import Web3 from 'web3';
 import ipfs from '../ipfs';
 import NewRoom from './NewRoom';
@@ -9,11 +10,14 @@ export default class NewHotel extends Component {
         this.state = {
             imageBuffer: null,
             ipfsImageHash: null,
+            show:false
         }
         this.handleSubmit = this.handleSubmit.bind(this);
         this.clearForm = this.clearForm.bind(this);
         this.capturePhoto = this.capturePhoto.bind(this);
         this.fetchImageHash = this.fetchImageHash.bind(this);
+        this.closeModal = this.closeModal.bind(this);
+        this.showModal = this.showModal.bind(this);
     }
 
     async componentWillMount() {
@@ -57,9 +61,9 @@ export default class NewHotel extends Component {
         }
         console.log("Hash:", this.state.ipfsImageHash);
         const tx = await hotelContract.methods.addHotel(
-            hotel.name, 
-            hotel.description, 
-            hotel.location, 
+            hotel.name,
+            hotel.description,
+            hotel.location,
             this.state.ipfsImageHash
             ).send({
                 from: account,
@@ -80,14 +84,31 @@ export default class NewHotel extends Component {
         event.preventDefault();
     }
 
+    async closeModal() {
+        this.setState({ show: false });
+    }
+
+    async showModal() {
+        this.setState({ show: true });
+    }
+
     render(){
         return(
             <div className="container mb-2">
                 <div className="row">
-                    <div className="col-md-6">
-                        <div className="card">
-                            <div className="card-header"><div className="card-title">List New Hotel</div></div>
-                            <div className="card-body">
+                    <div className="col-md-2"></div>
+                    <div className="col-md-8">
+                        <Button variant="primary" onClick={this.showModal}>
+                            List Hotel
+                        </Button>
+                        <Modal show={this.state.show} onHide={this.closeModal}>
+                            <Modal.Header closeButton>
+                                <Modal.Title> List Hotel</Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body>
+                                <div className="row col-md-12">
+                                    <p>By Confirming your hotel listing, you agree to our terms and conditions on paying a listing fee of <b>{this.props.listingFee}</b> ETH</p>
+                                </div>
                                 <form onSubmit={this.handleSubmit}>
                                     <div className="form-group row mb-2">
                                         <label for="name" className="col-sm-6 col-form-label">Name: </label>
@@ -113,19 +134,25 @@ export default class NewHotel extends Component {
                                             <input type="file" onChange={this.capturePhoto} accept=".jpg, .png, .svg" name="image" id="image" placeholder="Upload File" />
                                         </div>
                                     </div>
-                                    <div className="form-group row mb-2">
-                                        <div className="col-sm-6">
-                                            <button type="submit" className="btn btn-primary">List Hotel</button>
-                                        </div>
-                                        <div className="col-sm-6">
-                                            <button onClick={this.clearForm} className="btn btn-warning">Clear Form</button>
-                                        </div>
-                                    </div>
+                                
+                                    <Modal.Footer>
+                                        <Button variant="secondary" onClick={this.closeModal}>
+                                            Cancel
+                                        </Button>
+                                        <Button type="submit" variant="primary">
+                                            Confirm Listing
+                                        </Button>
+                                    </Modal.Footer>
                                 </form>
-                            </div>
-                        </div>
+                            </Modal.Body>
+                            
+                        </Modal>
                     </div>
-                    <NewRoom 
+                    <div className="col-md-2"></div>
+                </div>
+                <div className="row">
+
+                    <NewRoom
                     hotelContract={this.props.hotelContract}
                     account={this.props.account}
                     />

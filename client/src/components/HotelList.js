@@ -1,4 +1,5 @@
-import React,{ Component, useState } from 'react';
+import React,{ Component  } from 'react';
+import { Button, Modal } from 'react-bootstrap';
 import Web3 from 'web3';
 import HotelItem from './HotelItem';
 import { BrowserRouter, Route, Routes, Link } from 'react-router-dom';
