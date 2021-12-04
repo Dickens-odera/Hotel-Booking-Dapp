@@ -136,11 +136,6 @@ export default class App extends Component {
       return (
           <React.Fragment>
           <Navbar account={this.state.account}/>
-          <NewHotel hotelContract={this.state.hotelContractABI}
-            listingFee={this.state.hotelListingFee}
-            account={this.state.account}
-            provider={this.state.provider}
-          />
           <RoomList rooms={this.state.rooms}
                     hotelContract={this.state.hotelContractABI}
                     account={this.state.account}
@@ -151,6 +146,7 @@ export default class App extends Component {
                      listingFee={this.state.hotelListingFee}
                      hotels={this.state.hotels}
                       account={this.state.account}
+                      provider={this.state.provider}
                      />
           </React.Fragment>
       );

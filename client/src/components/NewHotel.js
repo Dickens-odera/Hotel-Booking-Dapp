@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Button, Modal } from 'react-bootstrap';
 import Web3 from 'web3';
 import ipfs from '../ipfs';
-import NewRoom from './NewRoom';
+
 
 export default class NewHotel extends Component {
     constructor(props) {
@@ -151,11 +151,6 @@ export default class NewHotel extends Component {
                     <div className="col-md-2"></div>
                 </div>
                 <div className="row">
-
-                    <NewRoom
-                    hotelContract={this.props.hotelContract}
-                    account={this.props.account}
-                    />
                 </div>
             </div>
         );
