@@ -90,7 +90,8 @@ export default class App extends Component {
       await this.fetchHotels();
       await this.setState({ isLoading: false });
     }else{
-      window.alert("Failed to fetch hotel contract");
+      this.setState({ isLoading: true });
+      window.alert("Kindly switch your network to Polygon Mumbai Tesnet");
     }
   }
 
