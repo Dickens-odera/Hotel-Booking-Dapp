@@ -10,7 +10,7 @@ export default class PageLoader extends Component
                 color="#00BFFF"
                 height={200}
                 width={100}
-               timeout={5000} // 8 secs
+               //timeout={5000} // 8 secs
                 visible={true}
             />
         );
