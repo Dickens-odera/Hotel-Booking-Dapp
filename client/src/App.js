@@ -91,7 +91,7 @@ export default class App extends Component {
       await this.setState({ isLoading: false });
     }else{
       this.setState({ isLoading: true });
-      window.alert("Kindly switch your network to Polygon Mumbai Tesnet");
+      window.alert("Kindly switch your network to Polygon Mumbai Testnet");
     }
   }
 
