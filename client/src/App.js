@@ -141,6 +141,7 @@ export default class App extends Component {
           {this.state.isLoading ? (
             <div className="text-center">
               <PageLoader />
+              <p className="text-center">Fetching hotels ...</p>
             </div>
           ): (
               <div>

@@ -98,7 +98,7 @@ export default class NewHotel extends Component {
                 <div className="row">
                     <div className="col-md-2"></div>
                     <div className="col-md-8">
-                        <Button variant="primary" onClick={this.showModal}>
+                        <Button onClick={this.showModal} style={{ "background-color":"#FFAO7A", "color":"#fff"}}>
                             List Hotel
                         </Button>
                         <Modal show={this.state.show} onHide={this.closeModal}>
