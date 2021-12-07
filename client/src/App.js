@@ -33,17 +33,13 @@ export default class App extends Component {
   async componentWillMount(){
     await this.loadWeb3();
     await this.loadBlockchain();
-    await this.fetchListingFee();
-    await this.fetchRooms();
-    await this.fetchHotels();
   }
 
   async loadWeb3(){
     if(window.ethereum){
       window.web3 = new Web3(window.ethereum);
       this.setState({ provider: window.web3});
-      await window.ethereum.enable();
-      //await window.etherum.send('eth_requestAccounts');
+      await window.ethereum.request({ method: 'eth_requestAccounts' });
     }
     else if(window.web3){
       window.web3 = new Web3(window.web3.currentProvider);
@@ -76,7 +72,6 @@ export default class App extends Component {
       const hotelContract = await new web3.eth.Contract(HotelContract.abi, hotelContractData.address);
       this.setState({ hotelContractABI: hotelContract });
       //console.log(hotelContract)
-      this.setState({ isLoading: false });
       //fetch total Number of hotels
       totalNumberOfHotels = await this.state.hotelContractABI.methods.totalHotels().call().then((total) => {
         this.setState({ totalHotels: total });
@@ -88,6 +83,11 @@ export default class App extends Component {
         console.log("Total Rooms: ", total);
         this.setState({ totalRooms: total });
       }).catch((error) => console.error(error));
+
+      await this.fetchListingFee();
+      await this.fetchRooms();
+      await this.fetchHotels();
+      await this.setState({ isLoading: false });
     }else{
       window.alert("Failed to fetch hotel contract");
     }
@@ -137,18 +137,27 @@ export default class App extends Component {
       return (
           <React.Fragment>
           <Navbar account={this.state.account}/>
-          <RoomList rooms={this.state.rooms}
-                    hotelContract={this.state.hotelContractABI}
-                    account={this.state.account}
-          />
-    
-          <HotelList hotelContract={this.state.hotelContractABI}
-                     totalHotels={this.state.totalHotels}
-                     listingFee={this.state.hotelListingFee}
-                     hotels={this.state.hotels}
-                      account={this.state.account}
-                      provider={this.state.provider}
-                     />
+          {this.state.isLoading ? (
+            <div className="loader">
+              <p className="text-center">Loading ....</p>
+            </div>
+          ): (
+              <div>
+              <RoomList rooms={this.state.rooms}
+                hotelContract={this.state.hotelContractABI}
+                account={this.state.account}
+              />
+
+              <HotelList hotelContract={this.state.hotelContractABI}
+                totalHotels={this.state.totalHotels}
+                listingFee={this.state.hotelListingFee}
+                hotels={this.state.hotels}
+                account={this.state.account}
+                provider={this.state.provider}
+              />
+              </div>
+          )
+        }
           </React.Fragment>
       );
     }
