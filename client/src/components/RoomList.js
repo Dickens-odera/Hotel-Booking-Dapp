@@ -6,7 +6,8 @@ export default class RoomList extends Component{
         super(props);
         this.state = {
             roomId:null,
-            show:false
+            show:false,
+            tenantNumOfNights:null,
         }
         
         this.bookRoom = this.bookRoom.bind(this);
@@ -129,14 +130,21 @@ export default class RoomList extends Component{
                                 <div className="form-group row mb-2">
                                     <label for="num_of_nights" className="col-sm-6 col-form-label">Number Of Nights:</label>
                                     <div className="col-md-6">
-                                        <input type="number" className="form-control" name="num_of_nights" id="num_of_nights" placeholder="Total No Of Nights" required></input>
+                                        <input type="number" className="form-control" 
+                                        name="num_of_nights" 
+                                        id="num_of_nights" 
+                                        placeholder="Total No Of Nights" 
+                                        required
+                                        onChange={(event) => this.setState({tenantNumOfNights: event.target.value})}
+                                        >
+                                        </input>
                                     </div>
                                 </div>
                                 <Modal.Footer>
                                     <Button variant="danger" onClick={this.closeModal}>
                                         Cancel
                                     </Button>
-                                    <Button type="submit" variant="primary">
+                                    <Button type="submit" variant="primary" disabled={!this.state.tenantNumOfNights || this.state.tenantNumOfNights <= 0 }>
                                         Confirm Booking
                                     </Button>
                                 </Modal.Footer>
