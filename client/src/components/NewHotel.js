@@ -113,25 +113,25 @@ export default class NewHotel extends Component {
                                     <div className="form-group row mb-2">
                                         <label for="name" className="col-sm-6 col-form-label">Name: </label>
                                         <div className="col-sm-6">
-                                            <input type="text" className="form-control" name="name" id="name" placeholder="Hotel Name"></input>
+                                            <input type="text" className="form-control" name="name" id="name" placeholder="Hotel Name" required></input>
                                         </div>
                                     </div>
                                     <div className="form-group row mb-2">
                                         <label for="location" className="col-sm-6 col-form-label">Location: </label>
                                         <div className="col-sm-6">
-                                            <input type="text" className="form-control" name="location" id="location" placeholder="Hotel Location"></input>
+                                            <input type="text" className="form-control" name="location" id="location" placeholder="Hotel Location" required></input>
                                         </div>
                                     </div>
                                     <div className="form-group row mb-2">
                                         <label for="description" className="col-sm-6 col-form-label">Description: </label>
                                         <div className="col-sm-6">
-                                            <textarea className="form-control" id="description" name="description" placeholder="Hotel Description"></textarea>
+                                            <textarea className="form-control" id="description" name="description" placeholder="Hotel Description" required></textarea>
                                         </div>
                                     </div>
                                     <div className="form-group row mb-2">
                                         <label for="file" className="col-sm-6 col-form-label">Photo</label>
                                         <div className="col-sm-6">
-                                            <input type="file" onChange={this.capturePhoto} accept=".jpg, .png, .svg" name="image" id="image" placeholder="Upload File" />
+                                            <input type="file" onChange={this.capturePhoto} accept=".jpg, .png, .svg" name="image" id="image" placeholder="Upload File" required />
                                         </div>
                                     </div>
                                 
@@ -139,7 +139,7 @@ export default class NewHotel extends Component {
                                         <Button variant="secondary" onClick={this.closeModal}>
                                             Cancel
                                         </Button>
-                                        <Button type="submit" variant="primary">
+                                        <Button type="submit" variant="primary" disabled={!this.state.ipfsImageHash}>
                                             Confirm Listing
                                         </Button>
                                     </Modal.Footer>

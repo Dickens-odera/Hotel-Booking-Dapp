@@ -129,7 +129,7 @@ export default class RoomList extends Component{
                                 <div className="form-group row mb-2">
                                     <label for="num_of_nights" className="col-sm-6 col-form-label">Number Of Nights:</label>
                                     <div className="col-md-6">
-                                        <input type="number" className="form-control" name="num_of_nights" id="num_of_nights" placeholder="Total No Of Nights"></input>
+                                        <input type="number" className="form-control" name="num_of_nights" id="num_of_nights" placeholder="Total No Of Nights" required></input>
                                     </div>
                                 </div>
                                 <Modal.Footer>

@@ -3,6 +3,7 @@ import Navbar from './components/Navbar';
 import NewHotel from './components/NewHotel';
 import HotelList from './components/HotelList';
 import RoomList from './components/RoomList';
+import PageLoader from './components/PageLoader';
 import Web3 from 'web3';
 import HotelContract from '../src/abi/Booking.json';
 import { BrowserRouter, Route, Routes, Link } from 'react-router-dom';
@@ -138,8 +139,8 @@ export default class App extends Component {
           <React.Fragment>
           <Navbar account={this.state.account}/>
           {this.state.isLoading ? (
-            <div className="loader">
-              <p className="text-center">Loading ....</p>
+            <div className="text-center">
+              <PageLoader />
             </div>
           ): (
               <div>
