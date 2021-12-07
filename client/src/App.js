@@ -18,7 +18,7 @@ export default class App extends Component {
       hotels: [],
       rooms:[],
       hotelListingFee:null,
-      loading:true,
+      isLoading:true,
       provider:null,
       networkId:null
     }
@@ -43,6 +43,7 @@ export default class App extends Component {
       window.web3 = new Web3(window.ethereum);
       this.setState({ provider: window.web3});
       await window.ethereum.enable();
+      //await window.etherum.send('eth_requestAccounts');
     }
     else if(window.web3){
       window.web3 = new Web3(window.web3.currentProvider);
@@ -58,7 +59,7 @@ export default class App extends Component {
     const web3 = await this.state.provider;
     const accounts = await web3.eth.getAccounts().then((accounts) => {
       this.setState({ account: accounts[0]});
-    });
+    }).catch(( error) => console.error(error));
     //detect change in Metamask Account
     window.ethereum.on('accountsChanged', async(accounts) => {
         this.setState({ account: accounts[0]});
@@ -75,7 +76,7 @@ export default class App extends Component {
       const hotelContract = await new web3.eth.Contract(HotelContract.abi, hotelContractData.address);
       this.setState({ hotelContractABI: hotelContract });
       //console.log(hotelContract)
-
+      this.setState({ isLoading: false });
       //fetch total Number of hotels
       totalNumberOfHotels = await this.state.hotelContractABI.methods.totalHotels().call().then((total) => {
         this.setState({ totalHotels: total });

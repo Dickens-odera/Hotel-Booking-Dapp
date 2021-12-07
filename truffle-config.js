@@ -18,12 +18,14 @@
  *
  */
 
-// const HDWalletProvider = require('@truffle/hdwallet-provider');
+const HDWalletProvider = require("@truffle/hdwallet-provider")
+require('dotenv').config();
 // const infuraKey = "fj4jll3k.....";
 //
 // const fs = require('fs');
-// const mnemonic = fs.readFileSync(".secret").toString().trim();
-
+//const mnemonic = fs.readFileSync(".env").toString().trim();
+const MNEMONIC = process.env.MNEMONIC;
+const PROJECT_ID = process.env.INFURA_PROJECT_ID;
 module.exports = {
   /**
    * Networks define how you connect to your ethereum client and let you set the
@@ -54,6 +56,15 @@ module.exports = {
       host: "127.0.0.1",
       port: 7545,
       network_id: "*"
+    },
+    matic: {
+      provider: () => new HDWalletProvider(MNEMONIC, `https://polygon-mumbai.infura.io/v3/${PROJECT_ID}`),
+      network_id: 80001,
+      confirmations: 2,
+      timeoutBlocks: 200,
+      skipDryRun: true,
+      gas: 6000000,
+      gasPrice: 10000000000,
     },
     // Another network with more advanced options...
     // advanced: {
@@ -86,7 +97,8 @@ module.exports = {
   mocha: {
     // timeout: 100000
   },
-
+  contracts_directory: './contracts/',
+  contracts_build_directory: './build/contracts/',
   // Configure your compilers
   compilers: {
     solc: {

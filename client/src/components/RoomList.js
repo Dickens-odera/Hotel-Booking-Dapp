@@ -99,7 +99,7 @@ export default class RoomList extends Component{
                                                             <td>{room.number}</td>
                                                             <td>{room.description}</td>
                                                             <td>
-                                                                {room.isBooked === false &&
+                                                                {room.isBooked === false && 
                                                             <Button variant="primary" onClick={this.showModal} id={room.id} className="btn btn-sm btn-primary" >Book Room</Button>
                                                                     
                                                                 }
