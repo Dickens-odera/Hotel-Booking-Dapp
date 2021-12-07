@@ -101,7 +101,7 @@ export default class RoomList extends Component{
                                                             <td>{room.description}</td>
                                                             <td>
                                                                 {room.isBooked === false && 
-                                                            <Button variant="primary" onClick={this.showModal} id={room.id} className="btn btn-sm btn-primary" >Book Room</Button>
+                                                            <Button variant="primary" onClick={this.showModal} id={room.id} className="btn btn-sm btn-primary" disabled={ room.user === this.props.account } >Book Room</Button>
                                                                     
                                                                 }
                                                                 { room.isBooked === true &&
