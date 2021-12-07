@@ -20,7 +20,7 @@ export default class  HotelList extends Component {
         this.closeModal = this.closeModal.bind(this);
         this.showModal = this.showModal.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-
+        this.showAlert = this.showAlert.bind(this);
     }
 
     async fetchHotelBioData(event){
@@ -105,6 +105,11 @@ export default class  HotelList extends Component {
         }).catch((error) => { console.error(error) })
     }
 
+    async showAlert(event){
+        event.preventDefault();
+        window.alert("Comming Soon");
+    }
+
     render(){
         const hotels = this.props.hotels.sort(( a, b ) => {
             return b.id - a.id;
@@ -137,10 +142,9 @@ export default class  HotelList extends Component {
                                     <p>Number Of Rooms: {hotel.totalRooms}</p>
                                     <p>Published By: {hotel.user}</p>
                                     <p>Hotel Type: {hotel.hotelCategory == 0 ? "Chain Hotel":""}</p>
-                                    <p>Image Hash: {hotel.imageHash}</p>
                                     <div className="row">
                                         <div className="col-md-6">
-                                            <Button className="btn btn-success btt-sm" onClick={this.fetchHotelBioData} id={hotel.id}> View </Button>
+                                            <Button className="btn btn-success btt-sm" onClick={this.showAlert} id={hotel.id}> View </Button>
                                         </div>
                                         <div className="col-md-6">
                                             {this.props.account === hotel.user &&
@@ -149,7 +153,7 @@ export default class  HotelList extends Component {
                                                 </Button>
                                             }
                                             { this.props.account !== hotel.user &&
-                                                <Button variant="info"> View Rooms </Button>
+                                                <Button variant="info" onClick={this.showAlert}> View Rooms </Button>
                                             }
                            
                                         </div>
