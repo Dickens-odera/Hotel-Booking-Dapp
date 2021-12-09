@@ -6,7 +6,7 @@ import RoomList from './components/RoomList';
 import PageLoader from './components/PageLoader';
 import Web3 from 'web3';
 import HotelContract from '../src/abi/Booking.json';
-import { BrowserRouter, Route, Routes, Link } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, Link, Outlet, Navigate } from 'react-router-dom';
 
 export default class App extends Component {
   constructor(props) {

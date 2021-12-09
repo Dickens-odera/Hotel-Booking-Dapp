@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Button, Modal } from 'react-bootstrap';
+import Navbar from './Navbar';
 
 export default class RoomList extends Component{
     constructor(props){

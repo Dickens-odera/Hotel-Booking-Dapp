@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { BrowserRouter, Route, Routes, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 export default class Navbar extends Component{
     constructor(props) {
@@ -14,7 +14,7 @@ export default class Navbar extends Component{
             <React.Fragment>
                     <div className="container mb-2">
                     <nav className="navbar navbar-dark bg-dark navbar-expand-lg">
-                        <a className="navbar-brand text-uppercase" href="#">{this.state.title}</a>
+                        <Link to="/" className="navbar-brand text-uppercase">{this.state.title}</Link>
                         <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
                             <span className="navbar-toggler-icon"></span>
                         </button>

@@ -184,7 +184,7 @@ export default class  HotelList extends Component {
                             <div className="form-group row mb-2">
                                 <label for="price_per_night" className="col-sm-6 col-form-label">Price Per Night:</label>
                                 <div className="col-md-6">
-                                    <input type="number" className="form-control" name="price_per_night" id="price_per_night" placeholder="Total No Of Rooms"></input>
+                                    <input type="number" className="form-control" name="price_per_night" id="price_per_night" placeholder="Total No Of Rooms" step="any"></input>
                                 </div>
                             </div>
                             <div className="form-group row mb-2">
