@@ -1,0 +1,14 @@
+{
+  "dependencies": {
+    "@ant-design/icons": "^4.7.0",
+    "@reduxjs/toolkit": "^1.7.0",
+    "antd": "^4.17.3",
+    "axios": "^0.24.0",
+    "chart.js": "^3.6.2",
+    "html-react-parser": "^1.4.3",
+    "millify": "^4.0.0",
+    "moment": "^2.29.1",
+    "react-chartjs-2": "^4.0.0",
+    "react-redux": "^7.2.6"
+  }
+}
