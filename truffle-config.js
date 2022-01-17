@@ -26,6 +26,7 @@ require('dotenv').config();
 //const mnemonic = fs.readFileSync(".env").toString().trim();
 const MNEMONIC = process.env.MNEMONIC;
 const PROJECT_ID = process.env.INFURA_PROJECT_ID;
+const POLYGONSCAN_API_KEY = process.env.POLYGONSCAN_API_KEY;
 module.exports = {
   /**
    * Networks define how you connect to your ethereum client and let you set the
@@ -114,6 +115,13 @@ module.exports = {
     }
   },
 
+  plugins:[
+    'truffle-plugin-verify'
+  ],
+
+  api_keys:{
+    polygonscan: POLYGONSCAN_API_KEY
+  },
   // Truffle DB is currently disabled by default; to enable it, change enabled: false to enabled: true
   //
   // Note: if you migrated your contracts prior to enabling this field in your Truffle project and want

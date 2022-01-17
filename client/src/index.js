@@ -8,6 +8,7 @@ import HotelList from './components/HotelList';
 import Home from './components/Home';
 import RoomList from './components/RoomList';
 import Web3 from 'web3';
+
 ReactDOM.render(
   <React.StrictMode>
     <Router >

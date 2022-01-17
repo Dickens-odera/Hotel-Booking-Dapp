@@ -38,7 +38,6 @@ contract Hotel is Ownable, HotelBookingInterface, ReentrancyGuard {
   }
 
   HotelItem[] public hotelItems; //hotels array of the Hotel struct above
-
   mapping(uint => HotelItem) public hotelItemId;
   mapping(address => HotelItem) public hotelOwner; //the owner of this hotel
   mapping(uint => bool) public existingHotelItemId;
