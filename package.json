@@ -9,7 +9,8 @@
     "millify": "^4.0.0",
     "moment": "^2.29.1",
     "react-chartjs-2": "^4.0.0",
-    "react-redux": "^7.2.6"
+    "react-redux": "^7.2.6",
+    "vite": "^2.7.13"
   },
   "devDependencies": {
     "truffle-plugin-verify": "^0.5.20"
