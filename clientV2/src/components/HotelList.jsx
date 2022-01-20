@@ -5,12 +5,12 @@ import { HotelBookingContext } from '../context/HotelBookingContext';
 
 
 const HotelList = () => {
-    const { hotelItems, connectedAddress } = useContext(HotelBookingContext);
+    const { hotelItems, connectedAddress, addNewRoom, fetchHotelBioData, fetchRooms } = useContext(HotelBookingContext);
 
-    const HotelItemCard = ({ hotel, connectedAddress }) => {
+    const HotelItemCard = ({ hotel, connectedAddress, fetchHotelBioData, fetchRooms }) => {
         return (
             <div className="col-md-4 mb-2" key={hotel.id}>
-                <div className="card">
+                <div className="card row">
                     <div className="card-header content-center">
                         <div className="card-title">
                             {hotel.name}
@@ -29,18 +29,26 @@ const HotelList = () => {
                         <p><span style={{ fontWeight: "bold" }}>Date of Creation:</span> {hotel.createdAt}</p>
                         <div className="row">
                             <div className="col-md-6">
-                                <Button variant="success">View</Button>
+                                <Button variant="success" onClick={fetchHotelBioData}>View</Button>
                             </div>
-                            <div className="col-md-6">
-                                { hotel.owner === connectedAddress ?
-                                    (
-                                        <Button variant="primary">Add Room</Button>
-                                    ):
-                                    (
-                                        <Button variant="primary">View Rooms</Button>
-                                    )    
+                            {
+                                connectedAddress &&
+
+                                <div className="col-md-6">
+                                        {hotel.owner && hotel.owner === connectedAddress &&
+                                            (
+                                            <Button onClick={addNewRoom}>Add Room</Button>
+
+                                            ) 
+                                        }
+                                        {hotel.owner && hotel.owner !== connectedAddress &&
+                                            (
+                                            <Button onClick={fetchRooms}>View Rooms</Button>
+
+                                            )
+                                        }
+                                </div>
                             }
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -53,7 +61,7 @@ const HotelList = () => {
         <div className="row">
             { hotelItems && hotelItems.length > 0 &&
                 hotelItems.map(( hotel, index) => (
-                    <HotelItemCard key={hotel.id} hotel={hotel} connectedAddress={connectedAddress} />
+                    <HotelItemCard key={hotel.id} hotel={hotel} connectedAddress={connectedAddress} fetchHotelBioData={fetchHotelBioData} fetchRooms={fetchRooms} />
                 ))
             }
         </div>

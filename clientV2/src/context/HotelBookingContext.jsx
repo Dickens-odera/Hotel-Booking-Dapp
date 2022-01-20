@@ -74,7 +74,6 @@ export const HotelBookingContextProvider = ({ children }) => {
                 throw new Error("No Ethereum object detected");
             }else{
                 const hotelBookingContract = getBookingContract();
-                let activeAddress;
                 const tx = await hotelBookingContract.listAllHotels().then(async( data ) => {
                     const hotelData = data.map(( hotelItem, index) => ({
                         id: hotelItem.id.toNumber(),
@@ -87,8 +86,10 @@ export const HotelBookingContextProvider = ({ children }) => {
                         createdAt: new Date(hotelItem.creationDate.toNumber() * 1000).toLocaleString(),
                         hotelType: hotelItem.hotelCategory,
                     }));
-                    //console.log("Hotel Data", hotelData.reverse());
+
+                    setIsLoading(true);
                     setHotelItems(hotelData.reverse());
+                    setIsLoading(false);
                 }).catch(( error ) => console.error(error));
             }
         }catch(error){
@@ -97,6 +98,7 @@ export const HotelBookingContextProvider = ({ children }) => {
     }
 
     const fetchRooms = async() => {
+        alert("You will soon be able to view this hotel\'s rooms");
 
     }
 
@@ -105,15 +107,15 @@ export const HotelBookingContextProvider = ({ children }) => {
     }
 
     const fetchHotelBioData = async () => {
+        alert("You will soon be able to view this hotel\'s details");
 
     }
 
     const addNewRoom = async () => {
-
+        alert("Please hang in there as we work on this");
     }
 
     const fetchRoomBioData = async () => {
-
     }
 
     const bookRoom = async () => {
@@ -128,10 +130,29 @@ export const HotelBookingContextProvider = ({ children }) => {
     }
 
     const detectNetworkChange = async() => {
-        ethereum.on('chainChanged', async (chainId) => {
-            console.log("ChainId", chainId);
-            setChainId(chainId);
-        });
+        try{
+            if(!ethereum){
+                alert("Please Install Metamask");
+                throw new Error("No Ethrereum object detected");
+            }else{
+                ethereum.on('chainChanged', async (chainId) => {
+                console.log("ChainId", chainId);
+                setChainId(chainId);            
+                window.location.reload();
+                const provider = new ethers.providers.Web3Provider(ethereum);
+                    provider.on("network",(newNetwork, oldNetwork) => {
+                        console.log("Old Network",oldNetwork);
+                        if (oldNetwork){
+                            window.location.reload();
+                        }
+                });
+
+            });
+        }
+        }catch(error){
+            console.error(error);
+        }
+
     }
 
     useEffect(() => {
@@ -146,7 +167,7 @@ export const HotelBookingContextProvider = ({ children }) => {
     return (
         <HotelBookingContext.Provider value={{
             connectWallet, isConnectedToWallet, hotelItems, roomItems, connectedAddress, isLoading, hotelFormData, chainId,
-            isBooked, isHotelOwner, listingFee
+            isBooked, isHotelOwner, listingFee, addNewRoom, fetchHotelBioData, fetchRooms
         }}>
             {children}
         </HotelBookingContext.Provider>

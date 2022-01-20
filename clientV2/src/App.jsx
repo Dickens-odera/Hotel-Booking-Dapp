@@ -19,11 +19,6 @@ const App = () => {
         </div>
       </div>
       <div className="row">
-        <div className="col-md-12m mb-2">
-          <HotelList />
-        </div>
-      </div>
-      <div className="row">
         <div className="col-md-12">
           <Footer />
         </div>
