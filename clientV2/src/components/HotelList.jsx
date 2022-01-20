@@ -22,7 +22,9 @@ const HotelList = () => {
                         </div>
                         <p><span style={{ fontWeight: "bold" }}>Description:</span> {hotel.description} </p>
                         <p><span style={{ fontWeight: "bold" }}>Location:</span> {hotel.location}</p>
-                        <p><span style={{ fontWeight: "bold" }}>Owner:</span> {hotel.owner}</p>
+                        <p><span style={{ fontWeight: "bold" }}>Owner:</span>
+                                {`${hotel.owner.slice(0, 5)}...${hotel.owner.slice(hotel.owner.length - 4)}`}
+                        </p>
                         <p><span style={{ fontWeight: "bold" }}>Total Rooms:</span> {hotel.numberOfRooms}</p>
                         <p><span style={{ fontWeight: "bold" }}>Date of Creation:</span> {hotel.createdAt}</p>
                         <div className="row">
@@ -30,13 +32,14 @@ const HotelList = () => {
                                 <Button variant="success">View</Button>
                             </div>
                             <div className="col-md-6">
-                                { connectedAddress !== hotel.owner && 
-                                    <Button variant="primary">View Rooms</Button>
-                                }
-                                { connectedAddress === hotel.owner &&
-                                    <Button variant="success">Add Room</Button>
-                                }
-
+                                { hotel.owner === connectedAddress ?
+                                    (
+                                        <Button variant="primary">Add Room</Button>
+                                    ):
+                                    (
+                                        <Button variant="primary">View Rooms</Button>
+                                    )    
+                            }
                             </div>
                         </div>
                     </div>
@@ -50,7 +53,7 @@ const HotelList = () => {
         <div className="row">
             { hotelItems && hotelItems.length > 0 &&
                 hotelItems.map(( hotel, index) => (
-                    <HotelItemCard hotel={hotel} connectedAddress={connectedAddress} />
+                    <HotelItemCard key={hotel.id} hotel={hotel} connectedAddress={connectedAddress} />
                 ))
             }
         </div>

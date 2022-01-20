@@ -19,7 +19,7 @@ export const HotelBookingContextProvider = ({ children }) => {
     const [hotelItems, setHotelItems] = useState([]);
     const [roomItems, setRoomItems] = useState([]);
     const [isConnectedToWallet, setIsConnectedToWallet] = useState(false);
-    const [connectedAddress, setConnectedAddress] = useState('');
+    const [connectedAddress, setConnectedAddress] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [hotelFormData, setHotelFormData] = useState({ name: "", description: "", location: "", imageHash: "" });
     const [chainId, setChainId] = useState(null);
@@ -36,7 +36,7 @@ export const HotelBookingContextProvider = ({ children }) => {
             else {
                 const accounts = await ethereum.request({ method: 'eth_accounts' });
                 if (accounts.length) {
-                    setConnectedAddress(accounts[0]);
+                    getWalletAddress();
                     setIsConnectedToWallet(true);
                 }
             }
@@ -60,6 +60,13 @@ export const HotelBookingContextProvider = ({ children }) => {
         }
     }
 
+    const getWalletAddress = async () => {
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = await provider.getSigner();
+        const userAddress = await signer.getAddress();
+        setConnectedAddress(userAddress);
+    }
+
     const fetchHotels = async() => {
         try{
             if(!ethereum){
@@ -67,7 +74,8 @@ export const HotelBookingContextProvider = ({ children }) => {
                 throw new Error("No Ethereum object detected");
             }else{
                 const hotelBookingContract = getBookingContract();
-                const tx = await hotelBookingContract.listAllHotels().then(( data ) => {
+                let activeAddress;
+                const tx = await hotelBookingContract.listAllHotels().then(async( data ) => {
                     const hotelData = data.map(( hotelItem, index) => ({
                         id: hotelItem.id.toNumber(),
                         name: hotelItem.name,
@@ -77,7 +85,7 @@ export const HotelBookingContextProvider = ({ children }) => {
                         numberOfRooms: hotelItem.totalRooms.toNumber(),
                         imageUrl : hotelItem.imageHash,
                         createdAt: new Date(hotelItem.creationDate.toNumber() * 1000).toLocaleString(),
-                        hotelType: hotelItem.hotelCategory
+                        hotelType: hotelItem.hotelCategory,
                     }));
                     //console.log("Hotel Data", hotelData.reverse());
                     setHotelItems(hotelData.reverse());
@@ -128,6 +136,7 @@ export const HotelBookingContextProvider = ({ children }) => {
 
     useEffect(() => {
         checkIfWallectIsConnected();
+        getWalletAddress();
         detectAccountChange();
         detectNetworkChange();
         fetchHotels();
