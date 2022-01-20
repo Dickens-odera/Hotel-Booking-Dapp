@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useContext } from 'react';
+import { Button } from 'react-bootstrap';
 
 import { HotelBookingContext } from '../context/HotelBookingContext';
 
 
 const HotelList = () => {
-    const { hotelItems } = useContext(HotelBookingContext);
+    const { hotelItems, connectedAddress } = useContext(HotelBookingContext);
 
-    const HotelItemCard = ({ hotel }) => {
+    const HotelItemCard = ({ hotel, connectedAddress }) => {
         return (
             <div className="col-md-4 mb-2" key={hotel.id}>
                 <div className="card">
@@ -24,6 +25,20 @@ const HotelList = () => {
                         <p><span style={{ fontWeight: "bold" }}>Owner:</span> {hotel.owner}</p>
                         <p><span style={{ fontWeight: "bold" }}>Total Rooms:</span> {hotel.numberOfRooms}</p>
                         <p><span style={{ fontWeight: "bold" }}>Date of Creation:</span> {hotel.createdAt}</p>
+                        <div className="row">
+                            <div className="col-md-6">
+                                <Button variant="success">View</Button>
+                            </div>
+                            <div className="col-md-6">
+                                { connectedAddress !== hotel.owner && 
+                                    <Button variant="primary">View Rooms</Button>
+                                }
+                                { connectedAddress === hotel.owner &&
+                                    <Button variant="success">Add Room</Button>
+                                }
+
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -35,7 +50,7 @@ const HotelList = () => {
         <div className="row">
             { hotelItems && hotelItems.length > 0 &&
                 hotelItems.map(( hotel, index) => (
-                    <HotelItemCard hotel={hotel} />
+                    <HotelItemCard hotel={hotel} connectedAddress={connectedAddress} />
                 ))
             }
         </div>
