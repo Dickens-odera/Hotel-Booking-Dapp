@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { ethers } from 'ethers';
-import { contractAddress, contractABI } from './utils/constants';
+import { contractAddress, contractABI } from '../utils/constants';
 
 export const HotelBookingContext = React.createContext();
 
