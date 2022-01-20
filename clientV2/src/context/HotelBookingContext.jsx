@@ -41,6 +41,7 @@ export const HotelBookingContextProvider = ({ children }) => {
                 const accounts = await ethereum.request({ method: 'eth_accounts' });
                 if (accounts.length) {
                     setConnectedAddress(accounts[0]);
+                    setIsConnectedToWallet(true);
                 }
             }
         } catch (error) {
@@ -83,10 +84,27 @@ export const HotelBookingContextProvider = ({ children }) => {
 
     }
 
+    const detectAccountChange = async() => {
+        ethereum.on('accountsChanged', async (accounts) => {
+            setConnectedAddress(accounts[0]);
+            setIsConnectedToWallet(true);
+        });
+    }
+
+    const detectNetworkChange = async() => {
+        ethereum.on('networkChanged', async (networkId) => {
+            console.log("ChainId", networkId);
+            setChainId(networkId);
+        });
+    }
 
     useEffect(() => {
         checkIfWallectIsConnected();
+        detectAccountChange();
+        detectNetworkChange();
     }, []);
+
+
     return (
         <HotelBookingContext.Provider value={{
             connectWallet, isConnectedToWallet, hotelItems, roomItems, connectedAddress, isLoading, hotelFormData, chainId,

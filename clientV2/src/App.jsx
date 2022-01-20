@@ -1,5 +1,5 @@
 import { useState, useContext } from 'react'
-import { Welcome, Navbar, Footer, HotelList, RoomList, NewRoom, NewHotel } from './components';
+import { Welcome, NavbarComponent, Footer, HotelList, RoomList, NewRoom, NewHotel } from './components';
 
 import { HotelBookingContext } from './context/HotelBookingContext';
 
@@ -10,7 +10,7 @@ const App = () => {
     <div className="container">
       <div className="row">
         <div className="col-md-12">
-          <Navbar />
+          <NavbarComponent />
         </div>
       </div>
       <div className="row">
