@@ -6,6 +6,14 @@ export const HotelBookingContext = React.createContext();
 
 const { ethereum } = window;
 
+
+const getBookingContract = () => {
+    const provider = new ethers.providers.Web3Provider(ethereum);
+    const signer = provider.getSigner();
+    const contract = new ethers.Contract(contractAddress, contractABI, signer);
+    return contract;
+}
+
 export const HotelBookingContextProvider = ({ children }) => {
 
     const [hotelItems, setHotelItems] = useState([]);
@@ -18,18 +26,6 @@ export const HotelBookingContextProvider = ({ children }) => {
     const [isBooked, setIsBooked] = useState(false);
     const [isHotelOwner, setIsHotelOwner] = useState(false);
     const [listingFee, setListingFee] = useState(null);
-
-    const getBookingContract = () => {
-        const provider = new ethers.providers.Web3Provider(ethereum);
-        const signer = provider.getSigner();
-        const contract = new ethers.Contract(contractAddress, contractABI, signer);
-        console.log({
-            provider,
-            signer,
-            contract
-        });
-        return contract;
-    }
 
     const checkIfWallectIsConnected = async () => {
         try {
@@ -64,6 +60,38 @@ export const HotelBookingContextProvider = ({ children }) => {
         }
     }
 
+    const fetchHotels = async() => {
+        try{
+            if(!ethereum){
+                alert("Please Install Metamask");
+                throw new Error("No Ethereum object detected");
+            }else{
+                const hotelBookingContract = getBookingContract();
+                const tx = await hotelBookingContract.listAllHotels().then(( data ) => {
+                    const hotelData = data.map(( hotelItem, index) => ({
+                        id: hotelItem.id.toNumber(),
+                        name: hotelItem.name,
+                        description: hotelItem.description,
+                        location: hotelItem.locationAddress,
+                        owner: hotelItem.user,  
+                        numberOfRooms: hotelItem.totalRooms.toNumber(),
+                        imageUrl : hotelItem.imageHash,
+                        createdAt: new Date(hotelItem.creationDate.toNumber() * 1000).toLocaleString(),
+                        hotelType: hotelItem.hotelCategory
+                    }));
+                    //console.log("Hotel Data", hotelData.reverse());
+                    setHotelItems(hotelData.reverse());
+                }).catch(( error ) => console.error(error));
+            }
+        }catch(error){
+            console.error(error);
+        }
+    }
+
+    const fetchRooms = async() => {
+
+    }
+
     const addNewHotel = async () => {
 
     }
@@ -92,9 +120,9 @@ export const HotelBookingContextProvider = ({ children }) => {
     }
 
     const detectNetworkChange = async() => {
-        ethereum.on('networkChanged', async (networkId) => {
-            console.log("ChainId", networkId);
-            setChainId(networkId);
+        ethereum.on('chainChanged', async (chainId) => {
+            console.log("ChainId", chainId);
+            setChainId(chainId);
         });
     }
 
@@ -102,6 +130,7 @@ export const HotelBookingContextProvider = ({ children }) => {
         checkIfWallectIsConnected();
         detectAccountChange();
         detectNetworkChange();
+        fetchHotels();
     }, []);
 
 

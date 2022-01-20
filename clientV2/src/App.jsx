@@ -9,17 +9,17 @@ const App = () => {
   return (
     <div className="container">
       <div className="row">
-        <div className="col-md-12">
+        <div className="col-md-12 mb-2">
           <NavbarComponent />
         </div>
       </div>
       <div className="row">
-        <div className="col-md-12">
+        <div className="col-md-12 mb-2">
           <Welcome />
         </div>
       </div>
       <div className="row">
-        <div className="col-md-12">
+        <div className="col-md-12m mb-2">
           <HotelList />
         </div>
       </div>
