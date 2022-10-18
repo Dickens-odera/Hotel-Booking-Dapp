@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
-import '@openzeppelin/contracts/utils/math/SafeMath.sol';
+//import '@openzeppelin/contracts/utils/math/SafeMath.sol';
 import '@openzeppelin/contracts/utils/Counters.sol';
 import './Hotel.sol';
 
 contract Room is Hotel{
-    using SafeMath for uint256;
+    //using SafeMath for uint256;
     using Counters for Counters.Counter;
 
     uint public totalRooms = 0;
@@ -31,11 +31,11 @@ contract Room is Hotel{
     mapping(uint => bool) public existingRoomItem;
     mapping(string => bool) public existingRoomItemName;
 
-    event NewRoomCreated(address indexed user, uint date, uint id);
-    event RoomNightPriceSet(address indexed user, uint price, uint indexed date);
-    event RoomBooked(uint date, address indexed tenant, uint indexed amountPaid, uint indexed roomId);
+    //event NewRoomCreated(address indexed user, uint date, uint id);
+    //event RoomNightPriceSet(address indexed user, uint price, uint indexed date);
+    //event RoomBooked(uint date, address indexed tenant, uint indexed amountPaid, uint indexed roomId);
 
-    constructor() public{
+    constructor(){
 
     }
 
@@ -60,10 +60,10 @@ contract Room is Hotel{
       _;
     }
 
+    //hotelExists(_hotelId)
+    //ownsHotel(_hotelId)
+    //roomNameDoesNotExist(_name)
     function addRoom(uint _hotelId, uint _totalBeds, uint _pricePerNight, uint _number,string memory _name, string memory _description) public
-    hotelExists(_hotelId)
-    ownsHotel(_hotelId)
-    roomNameDoesNotExist(_name)
     {
         require(msg.sender != address(0));
         require(_totalBeds != 0,"Number of beds cannot be zero");
@@ -76,11 +76,11 @@ contract Room is Hotel{
         roomItemId[currentRoomId]  = RoomItem(currentRoomId,_totalBeds,hotelId,_pricePerNight, _number, false, payable(msg.sender),_name,_description);
         rooms.push(roomItemId[currentRoomId]);
         roomOwner[msg.sender] = roomItemId[currentRoomId];
-        hotelItemTotalRooms = hotelItemTotalRooms.add(1);
-        totalRooms = totalRooms.add(1);
+        hotelItemTotalRooms = hotelItemTotalRooms + 1;
+        totalRooms  += 1;
         existingRoomItem[currentRoomId] = true;
         existingRoomItemName[_name] = true;
-        emit NewRoomCreated(msg.sender, block.timestamp, currentRoomId);
+        //emit NewRoomCreated(msg.sender, block.timestamp, currentRoomId);
     }
 
     function getRoomBioData(uint _roomId) public view roomExists(_roomId) returns(
@@ -117,7 +117,7 @@ contract Room is Hotel{
     function setNightPrice(uint _roomId, uint _price) public onlyRoomOwner(_roomId){
         require(_price != 0,"price Cannot be zero");
         roomItemId[_roomId].pricePerNight = _price;
-        emit RoomNightPriceSet(msg.sender, _price, block.timestamp);
+        //emit RoomNightPriceSet(msg.sender, _price, block.timestamp);
     }
 
     function _setBooked(uint _roomId) internal roomExists(_roomId){

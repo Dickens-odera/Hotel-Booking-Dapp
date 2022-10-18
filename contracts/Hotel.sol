@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
-import '@openzeppelin/contracts/utils/math/SafeMath.sol';
+//import '@openzeppelin/contracts/utils/math/SafeMath.sol';
 import '@openzeppelin/contracts/security/ReentrancyGuard.sol';
 import '@openzeppelin/contracts/access/Ownable.sol';
 import '@openzeppelin/contracts/utils/Counters.sol';
@@ -13,7 +13,7 @@ import './HotelBookingInterface.sol';
   **/
 
 contract Hotel is Ownable, HotelBookingInterface, ReentrancyGuard {
-  using SafeMath for uint256;
+  //using SafeMath for uint256;
   using Counters for Counters.Counter;
 
   uint public totalHotels = 0; //the total number of the hotels
@@ -44,12 +44,12 @@ contract Hotel is Ownable, HotelBookingInterface, ReentrancyGuard {
   mapping(string => bool) public existingHotelItemName;
 
   //events
-  event HotelCreated(uint date, address indexed causer, uint indexed id);
-  event HotelCategoryChanged(address indexed causer, uint date, HOTEL_CATEGORY indexed newCategory);
-  event HotelOwnerChanged(address indexed causer, address indexed newOwner, uint date);
-  event HotelListingFeeChanged(address indexed user, uint indexed date,uint indexed fee);
+//   event HotelCreated(uint date, address indexed causer, uint indexed id);
+//   event HotelCategoryChanged(address indexed causer, uint date, HOTEL_CATEGORY indexed newCategory);
+//   event HotelOwnerChanged(address indexed causer, address indexed newOwner, uint date);
+//   event HotelListingFeeChanged(address indexed user, uint indexed date,uint indexed fee);
 
-  constructor() public {
+  constructor() {
 
   }
 
@@ -85,7 +85,7 @@ contract Hotel is Ownable, HotelBookingInterface, ReentrancyGuard {
   function setListingFee(uint _fee) public onlyOwner{
     require(_fee != 0,"Listing Fee Cannot be zero");
     hotelListingFee = _fee;
-    emit HotelListingFeeChanged(msg.sender,block.timestamp, _fee);
+    //emit HotelListingFeeChanged(msg.sender,block.timestamp, _fee);
   }
 
   function setImageHash(uint hotelId, string memory imageHash) public{
@@ -108,11 +108,11 @@ contract Hotel is Ownable, HotelBookingInterface, ReentrancyGuard {
     hotelItemId[currentHotelId] = HotelItem(currentHotelId,0, block.timestamp, _name, DEFAULT_HOTEL_TYPE,_description, _location, payable(msg.sender), _imageHash);
     hotelItems.push(hotelItemId[currentHotelId]);
     hotelOwner[msg.sender] = hotelItemId[currentHotelId];
-    totalHotels = totalHotels.add(1);
+    totalHotels += 1;
     existingHotelItemId[currentHotelId] = true;
     existingHotelItemName[_name] = true;
     payable(owner()).transfer(msg.value);
-    emit HotelCreated(block.timestamp, msg.sender, currentHotelId);
+    //emit HotelCreated(block.timestamp, msg.sender, currentHotelId);
   }
 
   function listAllHotels() public view returns(HotelItem[] memory){
@@ -145,7 +145,7 @@ contract Hotel is Ownable, HotelBookingInterface, ReentrancyGuard {
      assert(_category != DEFAULT_HOTEL_TYPE);
      assert(_category != hotelItem.hotelCategory);
      hotelItem.hotelCategory = _category;
-     emit HotelCategoryChanged(msg.sender, block.timestamp, _category);
+     //emit HotelCategoryChanged(msg.sender, block.timestamp, _category);
   }
 
   function getName(uint _hotelId) external virtual view override hotelExists(_hotelId) returns(string memory){
@@ -160,6 +160,6 @@ contract Hotel is Ownable, HotelBookingInterface, ReentrancyGuard {
       require(msg.sender != _newOwner,"You are the rightful owner already");
       require(_newOwner != address(0),"Please specify a valid ETH address");
       hotelItemId[_hotelId].user = _newOwner;
-      emit HotelOwnerChanged(msg.sender, _newOwner, block.timestamp);
+      //emit HotelOwnerChanged(msg.sender, _newOwner, block.timestamp);
   }
 }
